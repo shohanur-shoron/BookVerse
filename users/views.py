@@ -2,14 +2,16 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 import random
 import string
 import re
 
 from users.models import Profile
+from books.models import Category
 
 
-def generate_unique_username(first_name, last_name):
+def generate_unique_username(first_name='shoron', last_name='rahman'):
     # Create initial username
     username = f"{first_name.lower()}{last_name.lower()}"
     # Remove any spaces
@@ -51,7 +53,7 @@ def is_phone_number(input_string):
 
 def login_user(request):
     if request.method == 'POST':
-        login_identifier = request.POST.get('login_identifier')
+        login_identifier = request.POST.get('username')
         password = request.POST.get('password')
 
         if is_phone_number(login_identifier):
@@ -70,8 +72,126 @@ def login_user(request):
 
         if user is not None:
             login(request, user)
+            return render(request, "signupAndLogin/ok.html")
+
+    return render(request, "signupAndLogin/login.html")
 
 
 def logout_user(request):
     if request.user.is_authenticated:
         logout(request)
+
+
+def create_account(request):
+    if request.method == 'POST':
+        firstname = request.POST.get('firstname')
+        lastname = request.POST.get('lastname')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        gender = request.POST.get('gender')
+        password = request.POST.get('password')
+        password_confirm = request.POST.get('password_confirm')
+        username = generate_unique_username(firstname, lastname)
+
+        # Check if passwords match
+        if password != password_confirm:
+            messages.error(request, 'Passwords do not match!')
+            return redirect('create_account')
+
+        # Check if phone number already exists
+        if Profile.objects.filter(phone=phone).exists():
+            messages.error(request, 'Phone number already registered!')
+            return redirect('create_account')
+
+        # Check if email already exists
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'Email already registered!')
+            return redirect('create_account')
+
+        try:
+            # Create User instance
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password,
+                first_name=firstname,
+                last_name=lastname
+            )
+
+            user.save()
+
+            user.profile.phone = phone
+            user.profile.gender = gender
+            user.profile.is_user = True
+            user.profile.is_reviewer = False
+            user.profile.save()
+
+            login(request, user)
+            return render(request, "signupAndLogin/updateUsername.html", {'username': username})
+
+        except Exception as e:
+            # If any error occurs, delete the user if it was created
+            if 'user' in locals():
+                user.delete()
+            messages.error(request, 'An error occurred while creating your account.')
+            return redirect('create_account')
+
+    return render(request, 'signupAndLogin/signup.html')
+
+def update_username(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        if username == '':
+            messages.error(request, 'Username cannot be empty!')
+            return redirect('update_username')
+
+        if username == request.user.username:
+            return render(request, 'signupAndLogin/updateProfileImage.html')
+
+        try:
+            user = User.objects.get(username=username)
+            messages.error(request, 'Username already registered! Pick another one.')
+            return redirect('update_username')
+        except:
+            request.user.username = username
+            request.user.save()
+            return render(request, 'signupAndLogin/updateProfileImage.html')
+
+    return render(request, 'signupAndLogin/updateUsername.html')
+
+
+def upload_image(request):
+    if request.method == 'POST':
+        if 'imageUpload' in request.FILES:
+            image = request.FILES['imageUpload']
+            if image:
+                try:
+                    request.user.profile.image = image
+                    request.user.profile.save()
+                    return redirect(add_interest)
+                except Exception as e:
+                    messages.error(request, "Error uploading image")
+            else:
+                messages.error(request, "Invalid image file")
+
+    return render(request, 'signupAndLogin/updateProfileImage.html')
+
+
+def add_interest(request):
+    interests = Category.objects.values_list('name', flat=True)
+    user_interests = request.user.profile.interests.values_list('name', flat=True)
+
+    context = {
+        'interests': interests,
+        'user_interests': list(user_interests)
+    }
+
+    return render(request, 'signupAndLogin/updateInterest.html', context)
+
+
+
+
+
+
+
+
