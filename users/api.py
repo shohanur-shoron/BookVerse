@@ -33,6 +33,7 @@ def del_interest(request, interest):
 
 
 def is_username_available(request, username):
+
     try:
         user = User.objects.get(username=username)
         return JsonResponse({'available': False})
