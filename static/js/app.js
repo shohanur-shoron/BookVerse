@@ -1,56 +1,50 @@
-const passwordConfirmFld = document.getElementById('passwordConfirmFld');
-const passwordFld = document.getElementById('passwordFld');
+const navbar = document.getElementById('navbar');
+const manu2ndLogo = document.getElementById('manu2ndLogo');
+const lowerSearchBox = document.getElementById('lowerSearchBox');
+const helpLine = document.getElementById('helpLine');
+const suggestions2 = document.getElementById('suggestions2');
+const suggestions = document.getElementById('suggestions');
+const proImgWrapper = document.getElementById('proImgWrapper');
+let lastScroll = 0;
 
-passwordConfirmFld.addEventListener('input', function(){
-    let password = passwordFld.value;
-    let passwordConfirm = passwordConfirmFld.value;
+window.addEventListener('scroll', () => {
+    const currentScroll = window.scrollY;
 
-    if(password.length <= passwordConfirm.length && password.length > 0){
-        if(password === passwordConfirm){
-            passwordFld.style.borderColor = '#2ecc71';
-            passwordConfirmFld.style.borderColor = '#2ecc71';
-        }
-        else{
-            passwordFld.style.borderColor = '#e74c3c';
-            passwordConfirmFld.style.borderColor = '#e74c3c';
-        }
+    if(currentScroll === 0){
+        navbar.style.transform = 'translateY(0)';
+        manu2ndLogo.style.display = 'none';
+        lowerSearchBox.style.display = 'none';
+        proImgWrapper.style.display = 'none';
+        helpLine.style.display = 'flex';
+        suggestions.style.display = 'flex';
     }
-    else{
-        passwordFld.style.borderColor = '#ccc';
-        passwordConfirmFld.style.borderColor = '#ccc';
+    if(currentScroll > lastScroll){
+        navbar.style.transform = 'translateY(-18vh)';
+        suggestions2.style.display = 'none';
+        suggestions.style.display = 'none';
     }
+    if(currentScroll <= lastScroll && currentScroll!==0){
+        navbar.style.transform = 'translateY(-10vh)';
+        manu2ndLogo.style.display = 'block';
+        lowerSearchBox.style.display = 'block';
+        proImgWrapper.style.display = 'flex';
+        helpLine.style.display = 'none';
+        suggestions2.style.display = 'flex';
+        suggestions.style.display = 'none';
+    }
+
+    lastScroll = currentScroll;
 });
 
-function checkPassword(attribute){
-    const catImage = document.getElementById('catImage');
-    if (passwordFld.type === 'password') {
-        passwordFld.type = 'text';
-        attribute.src = attribute.getAttribute('data-hide-src');
-        catImage.style.opacity = '1';
-        catImage.style.transform = `translateX(43px)`;
-        catImage.style.zIndex = '1';
-    } else {
-        passwordFld.type = 'password';
-        attribute.src = attribute.getAttribute('data-show-src');
-        catImage.style.opacity = '0';
-        catImage.style.transform = `translateX(0px)`;
-        catImage.style.zIndex = '-1';
-    }
-}
 
-function checkPassword2(attribute){
-    const catImage = document.getElementById('catImage2');
-    if (passwordConfirmFld.type === 'password') {
-        passwordConfirmFld.type = 'text';
-        attribute.src = attribute.getAttribute('data-hide-src');
-        catImage.style.opacity = '1';
-        catImage.style.transform = `translateX(50px)`;
-        catImage.style.zIndex = '1';
-    } else {
-        passwordConfirmFld.type = 'password';
-        attribute.src = attribute.getAttribute('data-show-src');
-        catImage.style.opacity = '0';
-        catImage.style.transform = `translateX(0px)`;
-        catImage.style.zIndex = '-1';
-    }
-}
+
+const searchBox1 = document.getElementById('searchBox1');
+const searchBox2 = document.getElementById('searchBox20');
+
+searchBox1.addEventListener('input', function (){
+    searchBox2.value = this.value;
+});
+
+searchBox2.addEventListener('input', function (){
+    searchBox1.value = this.value;
+});
