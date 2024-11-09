@@ -6,6 +6,7 @@ class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     added_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    is_active = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.name} added by {self.added_by}"
@@ -46,9 +47,12 @@ class Book(models.Model):
     reading_level = models.CharField(max_length=50, blank=True, null=True)
     best_character = models.CharField(max_length=100, blank=True, null=True)
     awards = models.TextField(blank=True, null=True)
-    format = models.CharField(max_length=50,
-                              choices=[('Hardcover', 'Hardcover'), ('Paperback', 'Paperback'), ('eBook', 'eBook')],
-                              blank=True, null=True)
+    format = models.CharField(
+        max_length=50,
+        choices=[('Hardcover', 'Hardcover'), ('Paperback', 'Paperback'), ('eBook', 'eBook')],
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         return self.name
