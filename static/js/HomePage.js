@@ -48,3 +48,38 @@ searchBox1.addEventListener('input', function (){
 searchBox2.addEventListener('input', function (){
     searchBox1.value = this.value;
 });
+
+const closeBtn = document.getElementById('closeBtn');
+const sideMenu = document.getElementById('sideMenu');
+const sideMenuCover = document.getElementById('sideMenuCover');
+const profileImage2 = document.getElementById('profileImage2');
+const profileImage = document.getElementById('profileImage');
+
+const disableScroll = () => {
+    document.body.style.overflow = 'hidden';
+    document.body.style.height = '100vh';
+};
+
+const enableScroll = () => {
+    document.body.style.overflow = 'auto';
+    document.body.style.height = 'auto';
+};
+
+const closeSidePanel = () => {
+    sideMenu.style.transform = 'translateX(18vw)';
+    sideMenuCover.style.display = 'none';
+    sideMenuCover.style.opacity = '0';
+    enableScroll();
+};
+
+const openSidePanel = () => {
+    sideMenu.style.transform = 'translateX(0)';
+    sideMenuCover.style.display = 'block';
+    sideMenuCover.style.opacity = '1';
+    disableScroll();
+};
+
+closeBtn.addEventListener('click', closeSidePanel);
+sideMenuCover.addEventListener('click', closeSidePanel);
+profileImage2.addEventListener('click', openSidePanel);
+profileImage.addEventListener('click', openSidePanel);

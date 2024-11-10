@@ -1,0 +1,41 @@
+{% extends "homePages/base.html" %}
+{% load static %}
+{% block style %}
+    <link rel="stylesheet" href="{% static 'style/homePageBookView.css' %}">
+{% endblock style %}
+
+{% block title %}Home - BookVerse{% endblock title %}
+
+{% block content %}
+
+    {% for book, commentCount in books %}
+        <div class="card" id="card">
+            <div class="imageWrapper" id="imageWrapper">
+                <div class="image">
+                    <img src="{{ book.image }}" alt="">
+                </div>
+                <div class="info" id="info">
+                    <p><i class='bx bx-like'></i> {{ book.likes_counter }}</p>
+                    <p><i class='bx bx-comment' ></i> {{ commentCount }}</p>
+                    <p><i class='bx bx-star' ></i> {{ book.rating }}</p>
+                    <div class="favourite">
+                        <img src="{% static 'images/icons8-favorite-50-white.png' %}" data-green-src="{% static 'images/icons8-favorite-50-green.png' %}" data-white-src="{% static 'images/icons8-favorite-50-white.png' %}" alt="">
+                        <p>Add to Favorite</p>
+                    </div>
+                </div>
+            </div>
+            <a href="#" class="bookname">
+                <p class="booknameText">{{ book.name }}</p>
+            </a>
+            <a href="#" class="auther">
+                <p class="autherName">{{ book.authors.name }}</p>
+            </a>
+        </div>
+    {% endfor %}
+
+{% endblock content %}
+
+
+{% block script %}
+    <script src="{% static 'js/bookCard.js' %}"></script>
+{% endblock script %}

@@ -15,7 +15,7 @@
 }
 
 ::-webkit-scrollbar {
-    width: 0px;
+    width: 0;
 }
 
 
@@ -162,7 +162,7 @@
     display: none;
 }
 
-.profileInfo{
+.profileInfo, .proImgWrapper{
 
     .signuporin{
         font-family: "Poppins", system-ui;
@@ -193,7 +193,7 @@
         }
     }
 
-    
+
 }
 
 .profileImage{
@@ -201,7 +201,7 @@
     width: 7vh;
     border-radius: 50%;
     cursor: pointer;
-    
+
     img{
         height: 100%;
         width: 100%;
@@ -210,8 +210,13 @@
     }
 }
 
-.profileImage2{
+.proImgWrapper{
     display: none;
+    gap: 10px;
+}
+
+.profileImage2{
+    display: block;
     height: 6vh;
     width: 6vh;
 }
@@ -302,7 +307,7 @@
     }
 }
 
-/* this is the test page css. remove this after the test page is done */
+
 .NavbarCover{
     width: 100%;
     height: 18vh;
@@ -310,7 +315,7 @@
 }
 
 .highlight {
-    background-color: #d89999b0; /* Change color as needed */
+    background-color: #d89999b0;
 }
 
 .footer{
@@ -374,4 +379,134 @@
             cursor: pointer;
         }
     }
+}
+
+
+.sideMenu{
+    position: fixed;
+    height: 100vh;
+    width: 18vw;
+    background-color: #ffffff;
+    z-index: 100999;
+    right: 0;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    padding: 20px 10px;
+    transition: all 0.3s ease;
+    transform: translateX(0vw);
+}
+
+.sideMenuCover{
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    left: 0;
+    z-index: 100998;
+    background-color: #13131338;
+    transition: all 0.3s ease;
+}
+
+.sideMenu{
+
+    .proInfo{
+        display: flex;
+        align-items: center;
+        padding: 3px 5px;
+        border-radius: 7px;
+        transition: all 0.1s ease;
+        width: 100%;
+
+
+        .proImageInSideMenu{
+            height: 5vh;
+            width: 5vh;
+
+            img{
+                height: 100%;
+                width: 100%;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+        }
+
+        .nameAndUsername{
+            font-family: "Roboto Condensed", serif;
+            color: rgb(0, 0, 0);
+
+            p:first-child {
+                font-weight: 500;
+                margin-left: 5px;
+            }
+            p:last-child {
+                font-weight: 300;
+                font-size: 0.8rem;
+                margin-left: 5px;
+            }
+        }
+
+        .closeBtn{
+            height: 4.5vh;
+            width: 4.5vh;
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 7px;
+            transition: all 0.1s ease;
+            cursor: pointer;
+
+            img{
+                height: 60%;
+            }
+
+            &:hover{
+                background-color: #dfdfdf;
+            }
+        }
+
+    }
+
+    .setProfile{
+        margin-top: 30px;
+    }
+
+    .intersection{
+        margin-top: 7px;
+        width: 100%;
+        height: 1px;
+        background-color: #dfdfdf;
+        margin-bottom: 6px;
+    }
+
+}
+
+.genericStyle{
+    width: 100%;
+    height: 4vh;
+    border-radius: 7px;
+    transition: all 0.1s ease;
+    padding: 0 10px;
+    text-decoration: none;
+    margin-top: 1px;
+
+    img{
+        height: 65%;
+        margin-right: 5px;
+    }
+
+    p{
+        font-family: "Roboto Condensed", serif;
+        font-size: 0.95rem;
+        color: #131313;
+    }
+
+    &:hover{
+        background-color: #dfdfdf;
+    }
+}
+
+.flex{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
 }

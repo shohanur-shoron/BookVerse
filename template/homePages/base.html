@@ -13,6 +13,99 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
+
+    {% if user.is_authenticated %}
+        <div class="sideMenu" id="sideMenu">
+            <div class="proInfo">
+                <div class="proImageInSideMenu">
+                    {% if user.profile.resized_image %}
+                        <img src="{{ user.profile.resized_image.url }}" alt="">
+                    {% elif user.profile.image %}
+                        <img src="{{ user.profile.image.url }}" alt="">
+                    {% else %}
+                        <img src="{% static 'images/icons8-user-default-96.png' %}" alt="">
+                    {% endif %}
+                </div>
+                <div class="nameAndUsername">
+                    <p>{{ user.username }}</p>
+                    <p>{{  user.get_full_name  }}</p>
+                </div>
+                <div class="closeBtn" id="closeBtn">
+                    <img src="{% static 'images/icons8-cross-24 (2).png' %}" alt="">
+                </div>
+            </div>
+
+            <a href="#" class="setProfile genericStyle flex">
+                <img src="{% static 'images/icons8-face-60.png' %}" alt="">
+                <p>Set Profile</p>
+            </a>
+            <div class="intersection"></div>
+
+            <a href="#" class="genericStyle flex">
+                <img src="{% static 'images/icons8-customer-64.png' %}" alt="">
+                <p>Your Profile</p>
+            </a>
+            <a href="#" class="genericStyle flex">
+                <img src="{% static 'images/icons8-books-64.png' %}" alt="">
+                <p>Your Books</p>
+            </a>
+            <a href="#" class="genericStyle flex">
+                <img src="{% static 'images/icons8-favourite-64.png' %}" alt="">
+                <p>Your Favourite</p>
+            </a>
+            <a href="#" class="genericStyle flex">
+                <img src="{% static 'images/icons8-like-32.png' %}" alt="">
+                <p>Your Likes</p>
+            </a>
+            <a href="#" class="genericStyle flex">
+                <img src="{% static 'images/icons8-comments-64.png' %}" alt="">
+                <p>Your Comments</p>
+            </a>
+            <a href="#" class="genericStyle flex">
+                <img src="{% static 'images/icons8-time-machine-32.png' %}" alt="">
+                <p>Recently seen</p>
+            </a>
+            <a href="#" class="genericStyle flex">
+                <img src="{% static 'images/icons8-status-64.png' %}" alt="">
+                <p>Reading Status</p>
+            </a>
+            <a href="#" class="genericStyle flex">
+                <img src="{% static 'images/icons8-task-completed-64.png' %}" alt="">
+                <p>Finished Reading</p>
+            </a>
+            <a href="#" class="genericStyle flex">
+                <img src="{% static 'images/icons8-open-book-64.png' %}" alt="">
+                <p>Read in Future</p>
+            </a>
+            <div class="intersection"></div>
+            <a href="#" class="genericStyle flex">
+                <img src="{% static 'images/icons8-review-64.png' %}" alt="">
+                <p>Become a Reviewer</p>
+            </a>
+            <a href="#" class="genericStyle flex">
+                <img src="{% static 'images/icons8-author-64.png' %}" alt="">
+                <p>Become an Author</p>
+            </a>
+            <a href="#" class="genericStyle flex">
+                <img src="{% static 'images/icons8-categorize-64.png' %}" alt="">
+                <p>Add a Category</p>
+            </a>
+            <a href="#" class="genericStyle flex">
+                <img src="{% static 'images/icons8-author-32.png' %}" alt="">
+                <p>Add an Author</p>
+            </a>
+            <a href="#" class="genericStyle flex">
+                <img src="{% static 'images/icons8-delete-64.png' %}" alt="">
+                <p>Delete this Account</p>
+            </a>
+            <div class="intersection"></div>
+            <a href="{% url 'logout_user' %}" class="genericStyle flex">
+                <img src="{% static 'images/icons8-logout-64.png' %}" alt="">
+                <p>Log-out</p>
+            </a>
+        </div>
+        <div class="sideMenuCover" id="sideMenuCover"></div>
+    {% endif %}
     
     <div class="navbar" id="navbar">
         <div class="upperNav">
@@ -32,15 +125,15 @@
             <div class="profileInfo">
                 {% if user.is_authenticated %}
                     {% if user.profile.resized_image %}
-                        <div class="profileImage">
+                        <div class="profileImage" id="profileImage2">
                             <img src="{{ user.profile.resized_image.url }}" alt="">
                         </div>
                     {% elif user.profile.image %}
-                        <div class="profileImage">
+                        <div class="profileImage" id="profileImage2">
                             <img src="{{ user.profile.image.url }}" alt="">
                         </div>
                     {% else %}
-                        <div class="profileImage">
+                        <div class="profileImage" id="profileImage2">
                             <img src="{% static 'images/icons8-user-default-96.png' %}" alt="">
                         </div>
                     {% endif %}
@@ -145,8 +238,8 @@
 
 
 
-    
-
+    {% block content %}
+    {% endblock content %}
 
 
 
@@ -195,9 +288,11 @@
         window.addEventListener('load', setDynamicMaxHeight);
         window.addEventListener('resize', setDynamicMaxHeight);
     </script>
-    <script src="{% static 'js/app.js' %}"></script>
+    <script src="{% static 'js/HomePage.js' %}"></script>
     <script src="{% static 'js/search-suggestions.js' %}"></script>
     <script src="{% static 'js/search-suggestions2.js' %}"></script>
+    {% block script %}
+    {% endblock script %}
 
 </body>
 </html>
