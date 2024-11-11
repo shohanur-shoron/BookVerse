@@ -1,0 +1,72 @@
+{% extends "homePages/base.html" %}
+
+    {% block style %}
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'style/forms.css' %}">
+    {% endblock style %}
+{% block title %}Add Book - BookVerse{% endblock %}
+
+{% block content %}
+
+    <div class="formContainer" id="formContainer">
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+
+            <input type="text" name="bookName" id="bookName" placeholder="Enter book name">
+            <input type="file" name="bookCover" id="bookCover" placeholder="Upload book cover">
+            <textarea name="description" id="description" placeholder="Enter book description"></textarea>
+            <input type="text" name="category" id="category" placeholder="Enter book category">
+            <input type="number" name="price" id="price" placeholder="Enter price">
+            <input type="text" name="authors" id="authors" placeholder="Enter author names">
+            <select name="rating" id="rating">
+                <option value="0" disabled selected>Give rating to this book</option>
+                <option value="1">1 star</option>
+                <option value="2">2 stars</option>
+                <option value="3">3 stars</option>
+                <option value="4">4 stars</option>
+                <option value="5">5 stars</option>
+            </select>
+            <textarea name="suggestions" id="suggestions" placeholder="Enter who you suggest to read this book"></textarea>
+            <input type="text" name="link" id="link" placeholder="Enter book link">
+            <input type="number" name="pages" id="pages" placeholder="Enter number of pages">
+            <input type="text" name="language" id="language" placeholder="Enter book language">
+            <input type="number" name="chapters" id="chapters" placeholder="Enter number of chapters">
+            <input type="number" name="favoritesChapters" id="favoritesChapters" placeholder="Enter favorite chapter numbers">
+            <textarea name="favoritesQuotes" id="favoritesQuotes" placeholder="Enter your favorite quotes"></textarea>
+            <input type="text" name="series" id="series" placeholder="Enter series name (if any)">
+            <input type="text" name="bestCharacter" id="bestCharacter" placeholder="Enter best character name (if any)">
+            <input type="text" name="awards" id="awards" placeholder="Enter book awards (if any)">
+            <select name="format" id="format">
+                <option value="0" disabled selected>What kind of book is this?</option>
+                <option value="Hardcover">Hardcover</option>
+                <option value="Paperback">Paperback</option>
+                <option value="eBook">eBook</option>
+            </select>
+
+            <input type="submit" value="submit" name="" id="">
+        </form>
+    </div>
+
+
+
+    <script>
+        function adjustAlignment() {
+            const div = document.getElementById('formContainer');
+
+            const viewportHeight = window.innerHeight;
+            const divHeight = div.offsetHeight;
+
+            const eightyVh = (viewportHeight * 0.8);
+
+            if (divHeight < eightyVh) {
+                div.style.alignItems = 'center';
+            } else {
+                div.style.alignItems = 'initial';
+            }
+        }
+
+        adjustAlignment();
+        window.addEventListener('resize', adjustAlignment);
+    </script>
+{% endblock content %}
