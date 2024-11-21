@@ -9,7 +9,7 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 from .views import *
 
 urlpatterns = [
-    path('', index, name='index'),
+    path('', mainHomePage, name='mainHomePage'),
     path('admin/', admin.site.urls),
     path('books/', include("books.urls")),
     path('accounts/', include('users.urls')),

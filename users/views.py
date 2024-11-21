@@ -1,4 +1,3 @@
-from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -7,6 +6,7 @@ import random
 import string
 import re
 
+from BookVerse.views import mainHomePage
 from users.models import Profile
 from books.models import Category
 
@@ -56,23 +56,33 @@ def login_user(request):
         login_identifier = request.POST.get('username')
         password = request.POST.get('password')
 
-        if is_phone_number(login_identifier):
-            # It's a phone number, try to get the user by phone
-            try:
-                user = Profile.objects.get(phone=login_identifier).user
-                username = user.username
-            except User.DoesNotExist:
-                return JsonResponse({'success': False, 'message': 'No user found with this phone number.'}, status=404)
-        else:
-            # It's a username
-            username = login_identifier
+        try:
+            if is_phone_number(login_identifier):
+                # It's a phone number, try to get the user by phone
+                try:
+                    user = Profile.objects.get(phone=login_identifier).user
+                    username = user.username
+                except Profile.DoesNotExist:
+                    messages.error(request, 'User with this phone number not found')
+                    return redirect('login_user')
 
-        # Attempt to authenticate the user
-        user = authenticate(request, username=username, password=password)
+            else:
+                # It's a username
+                username = login_identifier
 
-        if user is not None:
-            login(request, user)
-            return render(request, "signupAndLogin/ok.html")
+            # Attempt to authenticate the user
+            user = authenticate(request, username=username, password=password)
+
+            if user is not None:
+                login(request, user)
+                return redirect(mainHomePage)
+            else:
+                messages.error(request, 'Invalid username or password')
+                return redirect('login_user')
+
+        except Exception as e:
+            messages.error(request, f'An error occurred: {str(e)}')
+            return redirect('login_user')
 
     return render(request, "signupAndLogin/login.html")
 
@@ -80,6 +90,8 @@ def login_user(request):
 def logout_user(request):
     if request.user.is_authenticated:
         logout(request)
+
+    return redirect(mainHomePage)
 
 
 def create_account(request):

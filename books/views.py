@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView, UpdateView
+from django.http import JsonResponse
 from django.urls import reverse_lazy
-from .models import Author, Book
+from .models import Author, Book, Category
 from .forms import AuthorForm
 from django.contrib import messages
 
@@ -28,6 +29,7 @@ class AuthorUpdateView(UpdateView):
     form_class = AuthorForm
     template_name = 'forms/generic_form.html'
     success_url = reverse_lazy('author-list')
+
 
 
 def create_book(request):

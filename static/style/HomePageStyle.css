@@ -393,7 +393,7 @@
     border-bottom-left-radius: 20px;
     padding: 20px 10px;
     transition: all 0.3s ease;
-    transform: translateX(0vw);
+    transform: translateX(18vw);
 }
 
 .sideMenuCover{
@@ -404,6 +404,7 @@
     z-index: 100998;
     background-color: #13131338;
     transition: all 0.3s ease;
+    display: none;
 }
 
 .sideMenu{

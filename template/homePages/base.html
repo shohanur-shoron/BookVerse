@@ -112,6 +112,7 @@
             <a class="mainLogo" href="#"><img  src="{% static 'images/BooKVerse(2).png' %}" alt=""></a>
             <div class="searchBox">
                 <form action="#" method="post">
+                    {% csrf_token %}
                     <div class="searchInput">
                         <input type="text" placeholder=" " name="searchText" id="searchBox1" autocomplete="off" required>
                         <p class="labelText">Search for Book, Author or Reviewer</p>
@@ -189,6 +190,7 @@
 
             <div class="searchBox lowerSearchBox" id="lowerSearchBox">
                 <form action="#" method="post">
+                    {% csrf_token %}
                     <div class="searchInput">
                         <input type="text" placeholder=" " name="searchText" id="searchBox20" autocomplete="off" required>
                         <p class="labelText">Search for Book, Author or Reviewer</p>
