@@ -1,0 +1,33 @@
+.categoryContainer{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-auto-rows: 205px;
+    gap: 10px;
+    justify-items: center;
+    min-height: 100vh;
+    align-items: start;
+    width: 100%;
+    padding: 20px 15px;
+}
+
+.categoryContainer a{
+    width: 200px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ecf0f1;
+    transition: box-shadow 0.15s ease;
+    border-radius: 4px;
+    font-family: "Roboto Condensed", serif;
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 15px;
+    text-align: center;
+    color: #2c3e50;
+}
+
+.categoryContainer a:hover {
+    box-shadow: 0 4px 8px #afb3b4;
+}

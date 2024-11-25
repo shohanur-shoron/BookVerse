@@ -12,4 +12,11 @@ urlpatterns = [
     path('logout', views.logout_user, name="logout_user"),
     path('add_interest', views.add_interest, name="add_interest"),
     path('search-suggestions', api.search_items, name='search_items'),
+    path("account/update", views.update_account, name="update_account"),
+    path("account/update/username", views.change_username, name="change_username"),
+    path("account/update/password", views.change_password, name="change_password"),
+    path("account/update/image", views.change_image, name="change_image"),
+    path("account/update/interest", views.change_interest, name="change_interest"),
+    path("account/delete", views.delete_user, name="delete_user"),
+    path("account/became_reviewer", views.became_reviewer, name="became_reviewer"),
 ]

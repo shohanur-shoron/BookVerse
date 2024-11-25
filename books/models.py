@@ -38,10 +38,10 @@ class Book(models.Model):
     likes_counter = models.PositiveIntegerField(default=0)
     likes = models.ManyToManyField(User, related_name='likes', blank=True)
     published_time = models.DateField(auto_now=False, auto_now_add=True)
-    pages = models.PositiveIntegerField(default=0)
+    pages = models.CharField(max_length=80, null=True, blank=True)
     language = models.CharField(max_length=100, blank=True, null=True)
-    chapters = models.PositiveIntegerField(default=0)
-    favorites_chapters = models.PositiveIntegerField(default=0)
+    chapters = models.CharField(max_length=50, null=True, blank=True)
+    favorites_chapters = models.CharField(max_length=50, null=True, blank=True)
     favorites_quotes = models.TextField(blank=True, null=True)
     series = models.CharField(max_length=100, blank=True, null=True)
     reading_level = models.CharField(max_length=50, blank=True, null=True)
@@ -77,3 +77,11 @@ class ReadingStatus(models.Model):
     ])
     current_page = models.PositiveIntegerField(default=0)
     last_updated = models.DateTimeField(auto_now=True)
+
+
+class Event(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to='event_images/', blank=True, null=True)
+    ongoing = models.BooleanField(default=False)

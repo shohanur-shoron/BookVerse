@@ -35,7 +35,7 @@
                 </div>
             </div>
 
-            <a href="#" class="setProfile genericStyle flex">
+            <a href="{% url 'update_account' %}" class="setProfile genericStyle flex">
                 <img src="{% static 'images/icons8-face-60.png' %}" alt="">
                 <p>Set Profile</p>
             </a>
@@ -78,23 +78,30 @@
                 <p>Read in Future</p>
             </a>
             <div class="intersection"></div>
-            <a href="#" class="genericStyle flex">
+            {% if not user.profile.is_reviewer %}
+            <a href="{% url 'became_reviewer' %}" class="genericStyle flex">
                 <img src="{% static 'images/icons8-review-64.png' %}" alt="">
                 <p>Become a Reviewer</p>
             </a>
+            {% else %}
+            <a href="{% url 'create_book' %}" class="genericStyle flex">
+            <img src="{% static 'images/icons8-book-6400.png' %}" alt="">
+            <p>Add a Book</p>
+            </a>
+            {% endif %}
             <a href="#" class="genericStyle flex">
                 <img src="{% static 'images/icons8-author-64.png' %}" alt="">
                 <p>Become an Author</p>
             </a>
-            <a href="#" class="genericStyle flex">
+            <a href="{% url 'category-create' %}" class="genericStyle flex">
                 <img src="{% static 'images/icons8-categorize-64.png' %}" alt="">
                 <p>Add a Category</p>
             </a>
-            <a href="#" class="genericStyle flex">
+            <a href="{% url "author-create" %}" class="genericStyle flex">
                 <img src="{% static 'images/icons8-author-32.png' %}" alt="">
                 <p>Add an Author</p>
             </a>
-            <a href="#" class="genericStyle flex">
+            <a href="{% url 'delete_user' %}" class="genericStyle flex">
                 <img src="{% static 'images/icons8-delete-64.png' %}" alt="">
                 <p>Delete this Account</p>
             </a>
@@ -109,7 +116,7 @@
     
     <div class="navbar" id="navbar">
         <div class="upperNav">
-            <a class="mainLogo" href="#"><img  src="{% static 'images/BooKVerse(2).png' %}" alt=""></a>
+            <a class="mainLogo" href="{% url 'mainHomePage' %}"><img  src="{% static 'images/BooKVerse(2).png' %}" alt=""></a>
             <div class="searchBox">
                 <form action="#" method="post">
                     {% csrf_token %}
@@ -153,22 +160,22 @@
 
                 <div class="menuLinks">
                     <div class="linkWrapper">
-                        <a href="#" class="topLink">Home</a><br>
-                        <a href="#" class="bottomLink">Home</a>
+                        <a href="{% url 'mainHomePage' %}" class="topLink">Home</a><br>
+                        <a href="{% url 'mainHomePage' %}" class="bottomLink">Home</a>
                     </div>
                 </div>
 
                 <div class="menuLinks">
                     <div class="linkWrapper">
-                        <a href="#" class="topLink">Categories</a><br>
-                        <a href="#" class="bottomLink">Categories</a>
+                        <a href="{% url 'category_page' %}" class="topLink">Categories</a><br>
+                        <a href="{% url 'category_page' %}" class="bottomLink">Categories</a>
                     </div>
                 </div>
 
                 <div class="menuLinks">
                     <div class="linkWrapper">
-                        <a href="#" class="topLink">Favourites</a><br>
-                        <a href="#" class="bottomLink">Favourites</a>
+                        <a href="{% url 'favorites_books' %}" class="topLink">Favourites</a><br>
+                        <a href="{% url 'favorites_books' %}" class="bottomLink">Favourites</a>
                     </div>
                 </div>
 

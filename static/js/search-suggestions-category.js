@@ -1,7 +1,6 @@
 // Get DOM elements
-const searchBox = document.getElementById('searchBox1');
-const searchBox20 = document.getElementById('searchBox20');
-const suggestionsBox = document.getElementById('suggestions');
+const searchBox = document.getElementById('category');
+const suggestionsBox = document.getElementById('sugesteditem');
 let currentFocus = -1;
 let allData = []; // Store all data
 let filteredData = []; // Store filtered results
@@ -33,7 +32,6 @@ function showSuggestions(value) {
 
     filteredData = filterData(value);
     suggestionsBox.innerHTML = '';
-    suggestionsBox.style.zIndex = `88888`;
     
     filteredData.forEach((item) => {
         const div = document.createElement('div');
@@ -43,7 +41,6 @@ function showSuggestions(value) {
         // Add click event
         div.addEventListener('click', () => {
             searchBox.value = item;
-            searchBox20.value = item; // Use full text when clicking
             suggestionsBox.innerHTML = '';
             currentFocus = -1;
         });
@@ -55,7 +52,7 @@ function showSuggestions(value) {
 // Fetch initial data when page loads
 async function fetchInitialData() {
     try {
-        const response = await fetch('http://127.0.0.1:8000/accounts/search-suggestions');
+        const response = await fetch('http://127.0.0.1:8000/books/getCategory/');
         allData = await response.json();
     } catch (error) {
         console.error('Error fetching initial data:', error);
@@ -96,7 +93,6 @@ searchBox.addEventListener('keydown', (e) => {
             e.preventDefault();
             if (currentFocus >= 0 && currentFocus < suggestions.length) {
                 searchBox.value = filteredData[currentFocus];
-                searchBox20.value = filteredData[currentFocus]; // Use full text from filtered data
                 suggestionsBox.innerHTML = '';
                 currentFocus = -1;
             }
@@ -134,7 +130,7 @@ document.addEventListener('click', (e) => {
 const style = document.createElement('style');
 style.textContent = `
     .suggestedText.active {
-        background-color: #71BF39 !important;
+        background-color: #dadada !important;
         color: #1a73e8;
     }
 `;

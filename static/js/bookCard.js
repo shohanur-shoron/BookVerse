@@ -45,30 +45,39 @@ function truncateBookName() {
             fullautherNameP.textContent = fullautherName;
         }
     });
+
+
+
+
+
+
+        // add to favourite btn image change
+    const favoriteDivs = document.querySelectorAll('.favourite');
+
+    favoriteDivs.forEach(div => {
+
+        div.onclick = () => {
+        const img = div.querySelector('img');
+        const p = div.querySelector('p');
+        const span = div.querySelector('span').innerText;
+        console.log(span);
+
+            if (img.src.includes('icons8-favorite-50-white.png')) {
+                fetch(`http://127.0.0.1:8000/books/add_to_favorites/${span}/`);
+                img.src = img.getAttribute('data-green-src');
+                p.textContent = 'Added to Favorite';
+
+            }
+            else {
+                img.src = img.getAttribute('data-white-src');
+                p.textContent = 'Add to Favorite';
+                fetch(`http://127.0.0.1:8000/books/remove_from_favorites/${span}/`);
+            }
+        };
+    });
 }
 
 // Call the function when the DOM is fully loaded to handle long book and auther name
 document.addEventListener('DOMContentLoaded', truncateBookName);
 
 
-// add to favourite btn image change
-const favoriteDivs = document.querySelectorAll('.favourite');
-
-favoriteDivs.forEach(div => {
-
-    div.onclick = () => {
-    const img = div.querySelector('img');
-    const p = div.querySelector('p');
-
-        if (img.src.includes('icons8-favorite-50-white.png')) {
-            img.src = img.getAttribute('data-green-src');
-            div.style.backgroundColor = 'rgb(255, 255, 255)';
-            p.textContent = 'Added to Favorite';
-        }
-        else {
-            img.src = img.getAttribute('data-white-src');
-            div.style.backgroundColor = 'transparent';
-            p.textContent = 'Add to Favorite';
-        }
-    };
-});

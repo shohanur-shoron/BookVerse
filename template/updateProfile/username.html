@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'style/basicinfo.css' %}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <title>Edit Profile</title>
+</head>
+<body>
+
+
+    <div class="sidePanel">
+        <div class="backBtn">
+            <i class='bx bx-arrow-back'></i>
+            <a href="{% url 'mainHomePage' %}">Home</a>
+        </div>
+        <div class="mainBtns">
+            <a href="{% url 'update_account' %}"><i class='bx bx-detail' ></i>Personal Details</a>
+            <a href="{% url 'change_username' %}" class="backgroundWhite"><i class='bx bx-user'></i>Change Username</a>
+            <a href="{% url 'change_password' %}"><i class='bx bx-lock'></i>Change Password</a>
+            <a href="{% url 'change_image' %}"><i class='bx bx-images' ></i>Change Profile Image</a>
+            <a href="{% url 'change_interest' %}"><i class='bx bx-like' ></i>Change Interest</a>
+        </div>
+
+    </div>
+
+    <div class="content">
+
+        <div class="changeUsername">
+            <form action="" method="post">
+                {% csrf_token %}
+                <input type="text" name="username" id="username" placeholder="Username" value="{{ user.username }}">
+                <input type="submit" value="Change Username">
+            </form>
+        </div>
+
+    </div>
+
+
+
+
+
+    <script>
+        const baseUrl = window.location.origin;
+        const username = document.getElementById('username');
+
+        function checkUsername(usernameText) {
+            fetch(`${baseUrl}/accounts/is-username-available/${username.value}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data =>{
+                    if(data.available === false){
+                        username.style.backgroundColor = `#e74c3c40`;
+                        username.style.borderColor = `#e74c3c`;
+                    }
+                    else {
+                        username.style.backgroundColor = `#2ecc7140`;
+                        username.style.borderColor = `#2ecc71`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching slugs:', error);
+                    // Optionally reset or set neutral styles on error
+                    username.style.backgroundColor = '';
+                    username.style.borderColor = '';
+                });
+        }
+
+        username.addEventListener('input', function (e){
+            let usernameText = username.value;
+
+            if(usernameText === "" || usernameText === `{{ username }}`){
+                username.style.borderColor = `#cccccc`;
+                username.style.backgroundColor = `transparent`;
+            }
+            else{
+                checkUsername(usernameText);
+            }
+        });
+
+    </script>
+
+</body>
+</html>

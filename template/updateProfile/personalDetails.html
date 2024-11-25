@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'style/basicinfo.css' %}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <title>Edit Profile</title>
+</head>
+<body>
+
+
+    <div class="sidePanel">
+        <div class="backBtn">
+            <i class='bx bx-arrow-back'></i>
+            <a href="{% url 'mainHomePage' %}">Home</a>
+        </div>
+        <div class="mainBtns">
+            <a href="{% url 'update_account' %}" class="backgroundWhite"><i class='bx bx-detail' ></i>Personal Details</a>
+            <a href="{% url 'change_username' %}"><i class='bx bx-user'></i>Change Username</a>
+            <a href="{% url 'change_password' %}"><i class='bx bx-lock'></i>Change Password</a>
+            <a href="{% url 'change_image' %}"><i class='bx bx-images' ></i>Change Profile Image</a>
+            <a href="{% url 'change_interest' %}"><i class='bx bx-like' ></i>Change Interest</a>
+        </div>
+        
+    </div>
+
+    <div class="content">
+
+        <div class="personalDetail">
+            <form action="" method="post">
+            {% csrf_token %}
+                <input type="text" id="fname" name="fname" placeholder="First Name" value="{{ user.first_name }}">
+                <input type="text" id="lname" name="lname" placeholder="Last Name" value="{{ user.last_name }}">
+                <input type="text" id="phone" name="phone" placeholder="Phone Number" value="{{ user.profile.phone }}">
+                <input type="text" id="email" name="email" placeholder="Email Address" value="{{ user.email }}">
+                <select name="gender" required autocomplete="sex">
+                    {% if user.profile.gender == "male" %}
+                        <option value="male" selected>Male</option>
+                    {% else %}
+                        <option value="male">Male</option>
+                    {% endif %}
+
+                    {% if user.profile.gender == "female" %}
+                        <option value="female" selected>Female</option>
+                    {% else %}
+                        <option value="female">Female</option>
+                    {% endif %}
+
+                    {% if user.profile.gender == "other" %}
+                        <option value="other" selected>Other</option>
+                    {% else %}
+                        <option value="other">Other</option>
+                    {% endif %}
+                </select>
+                <input type="submit" value="Update Information">
+            </form>
+        </div>
+        
+    </div>
+    
+</body>
+</html>

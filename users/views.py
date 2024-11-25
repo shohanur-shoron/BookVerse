@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 import random
 import string
@@ -201,9 +201,88 @@ def add_interest(request):
     return render(request, 'signupAndLogin/updateInterest.html', context)
 
 
+def update_account(request):
+    if request.method == 'POST':
+        firstname = request.POST.get('fname')
+        lastname = request.POST.get('lname')
+        email = request.POST.get('phone')
+        phone = request.POST.get('email')
+        gender = request.POST.get('gender')
+
+        user = request.user
+
+        user.first_name = firstname
+        user.last_name = lastname
+        user.email = email
+        user.save()
+
+        user.profile.phone = phone
+        user.profile.gender = gender
+        user.profile.save()
+
+        return redirect("update_account")
+
+    return render(request, "updateProfile/personalDetails.html")
+
+def change_username(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        if username == '':
+            messages.error(request, 'Username cannot be empty!')
+            return redirect('change_username')
+        if username == request.user.username:
+            messages.error(request, 'Username already registered!')
+            return redirect('change_username')
+        request.user.username = username
+        request.user.save()
+        return redirect("change_username")
+    return render(request, "updateProfile/username.html")
+
+def change_password(request):
+    if request.method == 'POST':
+        old_password = request.POST.get('oldPass')
+        new_password = request.POST.get('newPass')
+
+        user = authenticate(username=request.user.username, password=old_password)
+
+        if user is not None:
+            request.user.set_password(new_password)
+            request.user.save()
+            update_session_auth_hash(request, request.user)
+            return redirect('logout_user')
+
+    return render(request, "updateProfile/changePassword.html")
+
+def change_image(request):
+    if request.method == 'POST':
+        image = request.FILES['imageUpload']
+        if image:
+            request.user.profile.image = image
+            request.user.profile.save()
+            return redirect("change_image")
+
+    return render(request, "updateProfile/changeImage.html")
+
+def change_interest(request):
+    interests = Category.objects.values_list('name', flat=True)
+    user_interests = request.user.profile.interests.values_list('name', flat=True)
+
+    context = {
+        'interests': interests,
+        'user_interests': list(user_interests)
+    }
+
+    return render(request, "updateProfile/changeInterest.html", context)
 
 
+def delete_user(request):
+    user = request.user
+    user.delete()
+    logout(request)
+    return redirect('mainHomePage')
 
-
-
-
+def became_reviewer(request):
+    user = request.user
+    user.profile.is_reviewer = True
+    user.profile.save()
+    return render(request, "homePages/reviewer.html")
