@@ -7,9 +7,17 @@ def index(request):
 
 def mainHomePage(request):
     books = Book.objects.all()
-    favorite_books = Book.objects.filter(favorite__user=request.user)
+
     context = {
         'books': books,
-        'favorite_books': favorite_books,
+        'favorite_books': [],
     }
+
+    if request.user.is_authenticated:
+        favorite_books = Book.objects.filter(favorite__user=request.user)
+        context = {
+            'books': books,
+            'favorite_books': favorite_books,
+        }
+
     return render(request, "homePages/mainHomePage.html", context)

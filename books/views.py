@@ -14,6 +14,13 @@ def check_author(name):
     except Author.DoesNotExist:
         return False
 
+def check_catecory(name):
+    try:
+        category = Category.objects.get(name=name)
+        return True
+    except Category.DoesNotExist:
+        return False
+
 class AuthorCreate(CreateView):
     model = Author
     form_class = AuthorForm
@@ -48,8 +55,8 @@ def AuthorUpdateView(request):
 
 def create_book(request):
     global author
+    global category
     if request.method == 'POST':
-
         if check_author(request.POST['authors']):
             author = Author.objects.get(name=request.POST['authors'])
         else:
@@ -57,11 +64,19 @@ def create_book(request):
             author.save()
             author.added_by = request.user
             author.save()
+
+        if check_catecory(request.POST.get('category')):
+            category = Category.objects.get(name=request.POST.get('category'))
+        else:
+            category = Category.objects.create(name=request.POST['authors'])
+            category.save()
+            category.added_by = request.user
+            category.save()
         try:
             new_book = Book(
                 name=request.POST.get('bookName'),
                 description=request.POST.get('description'),
-                category=Category.objects.get(name=request.POST.get('category')),
+                category=category,
                 price=request.POST.get('price'),
                 authors=author,
                 rating=request.POST.get('rating'),
@@ -79,14 +94,12 @@ def create_book(request):
             )
             new_book.save()
 
-            # Handle file upload
-            if request.FILES['bookCover']:
+            # Handle file upload only if a file is present
+            if 'bookCover' in request.FILES and request.FILES['bookCover']:
                 new_book.image = request.FILES['bookCover']
                 new_book.save()
 
             messages.success(request, 'Book created successfully!')
-
-
             return redirect('mainHomePage')
 
         except Exception as e:
@@ -105,11 +118,14 @@ def category_page(request):
 
 
 def add_to_favorites(request, id):
-    book = get_object_or_404(Book, pk=id)
-    user = request.user
-    favorite = Favorite.objects.create(user=user, book=book)
-    favorite.save()
-    return JsonResponse("Favorites Added with id: {id}".format(id=favorite.id), safe=False)
+    if request.user.is_authenticated:
+        book = get_object_or_404(Book, pk=id)
+        user = request.user
+        favorite = Favorite.objects.create(user=user, book=book)
+        favorite.save()
+        return JsonResponse("Favorites Added with id: {id}".format(id=favorite.id), safe=False)
+    else:
+        return redirect('login_user')
 
 def remove_from_favorites(request, id):
     book = get_object_or_404(Book, pk=id)
@@ -123,9 +139,12 @@ def remove_from_favorites(request, id):
 
 
 def favorites_books(request):
-    favorite_books = Book.objects.filter(favorite__user=request.user)
-    context = {
-        'books': favorite_books,
-        'favorite_books': favorite_books,
-    }
-    return render(request, "homePages/mainHomePage.html", context)
+    if request.user.is_authenticated:
+        favorite_books = Book.objects.filter(favorite__user=request.user)
+        context = {
+            'books': favorite_books,
+            'favorite_books': favorite_books,
+        }
+        return render(request, "homePages/mainHomePage.html", context)
+    else:
+        return redirect('login_user')

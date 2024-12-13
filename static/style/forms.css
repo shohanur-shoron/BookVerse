@@ -200,3 +200,20 @@
     }
 }
 
+.messages{
+    min-height: 50px;
+    width: 100%;
+    border: 1px solid red;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .message{
+        margin: 5px;
+        font-family: "Poppins", sans-serif;
+        font-weight: 300;
+        font-size: 1rem;
+    }
+}
+
