@@ -1,0 +1,178 @@
+{% extends '../homePage/base.html' %} {# Or your base template #}
+{% load static %}
+
+{% block title %}{{ title_text }}{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'style/current_reading_card_style.css' %}">
+    {# Include Font Awesome if you used it previously #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
+{% block content %}
+
+<div class="reading-grid-container"> {# Use a grid container if needed #}
+    {% if reading_statuses %}
+        {% for rs in reading_statuses %}
+            {# Pass book.pages as integer, default to 0 if None/invalid #}
+            {% with total_pages=rs.book.pages|default:0 %}
+            {% with total_pages_int=total_pages|stringformat:"d"|default:"0" %}
+                <div class="reading-card" id="reading-card-{{ rs.book.id }}" data-book-id="{{ rs.book.id }}" data-total-pages="{{ total_pages_int }}">
+                    <img src="{{ rs.book.image.url|default:'/static/images/placeholder_cover.png' }}"
+                         alt="{{ rs.book.name }} Cover"
+                         class="reading-card__cover">
+
+                    <div class="reading-card__content">
+                        <h3 class="reading-card__title">
+                            <a href="{% url 'book_detail_view' rs.book.id %}">{{ rs.book.name }}</a>
+                        </h3>
+
+                        {# Optional: Add description or other info if needed #}
+                         <p class="reading-card__description">{{ rs.book.description|truncatewords:20 }}</p>
+                        <div class="comment-card__rating">
+                            {% with rating=rs.book.rating|default:0 %}
+                                {% for i in "12345" %}
+                                    {% if i|add:"0" <= rating %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                             {% endwith %}
+                        </div>
+                        <div class="reading-card__progress-area">
+                            <span class="progress-label current-page" id="current-page-{{ rs.book.id }}">{{ rs.current_page }}</span>
+                            <progress id="progress-bar-{{ rs.book.id }}" class="reading-progress-bar" value="{{ rs.current_page }}" max="{{ rs.book.pages }}"></progress>
+                            <span class="progress-label total-pages">{{ rs.book.pages }}</span>
+                        </div>
+
+                        <div class="reading-card__update-area">
+                            <input type="number" class="page-input" id="page-input-{{ rs.book.id }}"
+                                   placeholder="Enter Current Reading Pg" min="0" {% if total_pages_int > 0 %}max="{{ total_pages_int }}"{% endif %}
+                                   aria-label="Current page for {{ rs.book.name }}">
+                            <button class="update-progress-btn" data-book-id="{{ rs.book.id }}">Update</button>
+                        </div>
+                         <div class="update-status" id="update-status-{{ rs.book.id }}"></div> {# For success/error messages #}
+                    </div>
+                </div>
+            {% endwith %}
+            {% endwith %}
+        {% endfor %}
+    {% else %}
+        <p>You are not currently reading any books.</p>
+    {% endif %}
+</div>
+
+{# Include CSRF token for POST requests - IMPORTANT #}
+<script>
+    // Function to get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    // Add event listeners to all update buttons
+    document.querySelectorAll('.update-progress-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const bookId = this.dataset.bookId;
+            const card = document.getElementById(`reading-card-${bookId}`);
+            const input = document.getElementById(`page-input-${bookId}`);
+            const progressBar = document.getElementById(`progress-bar-${bookId}`);
+            const currentPageSpan = document.getElementById(`current-page-${bookId}`);
+            const statusDiv = document.getElementById(`update-status-${bookId}`);
+            const totalPages = parseInt(card.dataset.totalPages, 10) || 0;
+
+            const newPage = input.value.trim();
+
+            // Basic client-side validation
+            if (newPage === '' || isNaN(newPage) || parseInt(newPage, 10) < 0) {
+                 statusDiv.textContent = 'Invalid page number.';
+                 statusDiv.style.color = 'red';
+                 return;
+            }
+             const newPageInt = parseInt(newPage, 10);
+
+            if (totalPages > 0 && newPageInt > total_pages) {
+                 statusDiv.textContent = `Page cannot exceed ${totalPages}.`;
+                 statusDiv.style.color = 'red';
+            }
+
+
+            statusDiv.textContent = 'Updating...'; // Provide feedback
+            statusDiv.style.color = 'black';
+
+            fetch("{% url 'update_reading_progress_api' %}", { // Use Django url tag
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken // Include CSRF token
+                },
+                body: JSON.stringify({
+                    book_id: bookId,
+                    current_page: newPage
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    // Try to get error message from backend JSON response
+                    return response.json().then(errData => {
+                       throw new Error(errData.message || `HTTP error! status: ${response.status}`);
+                    });
+                }
+                return response.json(); // Parse JSON body of the response
+            })
+            .then(data => {
+                console.log(data); // Log backend response
+                if (data.status === 'success') {
+                    // Update UI
+                    progressBar.value = data.current_page;
+                    progressBar.max = data.total_pages; // Update max in case it wasn't set correctly initially
+                    currentPageSpan.textContent = data.current_page;
+                    card.querySelector('.total-pages').textContent = data.total_pages; // Update total pages display
+                    card.dataset.totalPages = data.total_pages; // Update data attribute too
+
+                    input.value = ''; // Clear input field
+                    statusDiv.textContent = 'Updated successfully!';
+                    statusDiv.style.color = 'green';
+
+                    // If status changed to completed, maybe disable controls or remove card
+                    if (data.reading_status === 'completed') {
+                        statusDiv.textContent += ' Book marked as completed!';
+                        // Optionally disable input/button
+                        input.disabled = true;
+                        button.disabled = true;
+                         // Or even remove the card after a delay:
+                         // setTimeout(() => { card.remove(); }, 3000);
+                    }
+
+                     // Clear status message after a delay
+                     setTimeout(() => { statusDiv.textContent = ''; }, 4000);
+
+                } else {
+                    // Handle specific errors returned from backend
+                    statusDiv.textContent = `Error: ${data.message}`;
+                    statusDiv.style.color = 'red';
+                }
+            })
+            .catch(error => {
+                console.error('Error updating progress:', error);
+                statusDiv.textContent = `Error: ${error.message || 'Network or server error.'}`;
+                statusDiv.style.color = 'red';
+            });
+        });
+    });
+</script>
+{% endblock %}

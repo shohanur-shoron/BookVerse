@@ -55,7 +55,7 @@ function showSuggestions(value) {
 // Fetch initial data when page loads
 async function fetchInitialData() {
     try {
-        const response = await fetch('http://127.0.0.1:8000/accounts/search-suggestions');
+        const response = await fetch('http://127.0.0.1:8000/search-suggestions');
         allData = await response.json();
     } catch (error) {
         console.error('Error fetching initial data:', error);

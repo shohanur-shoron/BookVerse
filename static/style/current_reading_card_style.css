@@ -1,0 +1,211 @@
+/* Import Font (Ensure Poppins is linked in your HTML <head> if not already) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+/*------------------------------------*/
+/* Grid Container for Reading Cards   */
+/*------------------------------------*/
+.reading-grid-container { /* Renamed from comments-grid-container */
+    display: grid;
+    /* Responsive Columns - Using 450px min-width as discussed for this card type */
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+    gap: 25px; /* Space between cards */
+    padding: 25px; /* Padding around the grid */
+    font-family: "Poppins", sans-serif; /* Apply Poppins font */
+    min-height: 100vh; /* Ensure container takes at least full viewport height */
+
+    /* CRITICAL FIX: Pack grid rows towards the top */
+    align-content: start;
+
+    /* Keep this: Aligns items to the top *within* their grid cell */
+    align-items: start;
+}
+
+/*------------------------------------*/
+/* Individual Reading Card            */
+/*------------------------------------*/
+.reading-card { /* Renamed from comment-card */
+    display: flex;
+    align-items: flex-start;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px; /* Increased padding */
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.07);
+    overflow: hidden;
+    transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.reading-card:hover { /* Renamed from comment-card:hover */
+     box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
+     transform: translateY(-3px);
+}
+
+/*------------------------------------*/
+/* Book Cover Image                   */
+/*------------------------------------*/
+.reading-card__cover { /* Renamed from comment-card__cover */
+    width: 175px;
+    height: 225px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-right: 20px;
+    flex-shrink: 0;
+    background-color: #f0f0f0; /* Placeholder color */
+}
+
+/*------------------------------------*/
+/* Content Area (Right Side)          */
+/*------------------------------------*/
+.reading-card__content { /* Renamed from comment-card__content */
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    flex-grow: 1; /* Take remaining space */
+    min-width: 0; /* Essential for text-overflow */
+}
+
+/*------------------------------------*/
+/* Book Title                         */
+/*------------------------------------*/
+.reading-card__title { /* Renamed from comment-card__title */
+    font-size: 1.15em;
+    font-weight: 600;
+    margin: 0 0 10px 0; /* Space below title */
+    color: #333;
+    /* Single Line Text Overflow */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.reading-card__title a { /* Renamed */
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s ease;
+}
+
+.reading-card__title a:hover { /* Renamed */
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/*---------------------------------------*/
+/* Styles for Reading Progress Elements  */
+/*---------------------------------------*/
+
+/* Progress Area Styling */
+.reading-card__progress-area {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between page numbers and progress bar */
+    margin: 15px 0; /* Vertical spacing */
+    width: 100%;
+}
+
+.reading-progress-bar {
+    flex-grow: 1; /* Bar takes available space */
+    height: 12px; /* Slightly thicker bar */
+    appearance: none;
+    border: none;
+    border-radius: 6px; /* Match bar height */
+    overflow: hidden;
+    background-color: #e9ecef; /* Background track color */
+}
+
+/* Style the progress bar's value indicator */
+.reading-progress-bar::-webkit-progress-bar { /* Webkit */
+    background-color: #e9ecef;
+    border-radius: 6px;
+}
+.reading-progress-bar::-webkit-progress-value {
+    background-color: #0d6efd; /* Bootstrap blue example */
+    border-radius: 6px;
+    transition: width 0.3s ease;
+}
+.reading-progress-bar::-moz-progress-bar { /* Firefox */
+    background-color: #0d6efd; /* Must match webkit-progress-value */
+    border-radius: 6px;
+    transition: width 0.3s ease;
+}
+
+.progress-label {
+    font-size: 0.9em;
+    color: #495057; /* Darker gray */
+    white-space: nowrap;
+    font-weight: 500;
+}
+.progress-label.current-page {
+    min-width: 30px; /* Ensure space */
+    text-align: right;
+}
+.progress-label.total-pages {
+     min-width: 30px; /* Ensure space */
+     text-align: left;
+}
+
+/* Update Area Styling */
+.reading-card__update-area {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between input and button */
+    margin-top: 5px; /* Space above update area */
+}
+
+.page-input {
+    padding: 6px 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    width: 280px; /* Limit width */
+    font-size: 0.95em;
+    /* Hide spinner arrows on number input (optional) */
+    -moz-appearance: textfield;
+}
+.page-input::-webkit-outer-spin-button,
+.page-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
+.update-progress-btn {
+    padding: 6px 15px; /* Slightly larger button */
+    font-size: 0.95em;
+    font-weight: 500;
+    border: none;
+    background-color: #198754; /* Bootstrap green example */
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.update-progress-btn:hover {
+    background-color: #157347; /* Darker green */
+}
+.update-progress-btn:disabled {
+    background-color: #adb5bd; /* Gray when disabled */
+    cursor: not-allowed;
+}
+
+/* Status Message */
+.update-status {
+    font-size: 0.85em;
+    margin-top: 10px;
+    min-height: 1.2em; /* Reserve space */
+    color: #6c757d; /* Default status color */
+    font-weight: 500;
+}
+
+.comment-card__rating {
+    margin-top: 10px; /* Pushes rating to bottom */
+    font-size: 1.05em;
+    color: #f0ad4e; /* Gold color for stars */
+    line-height: 1;
+}
+
+/* Font Awesome Star Styles */
+.comment-card__rating .fas { /* Filled */
+    /* Inherits color */
+}
+
+.comment-card__rating .far { /* Empty */
+     color: #d0d0d0; /* Light gray */
+}

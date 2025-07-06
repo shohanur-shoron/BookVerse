@@ -1,0 +1,802 @@
+/* ============================================= */
+/* === START OF FILE: style/cardDetails.css === */
+/* ============================================= */
+
+/* --- Global Resets & Base Styles --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: "Poppins", sans-serif;
+    line-height: 1.7; /* Slightly increased line height for readability */
+    color: #333; /* Default text color */
+    background-color: #f8f9fa; /* Light grey background */
+    font-size: 16px; /* Base font size */
+}
+
+a {
+    color: #27ae60; /* Green for links */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #2ecc71; /* Lighter green on hover */
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block; /* Removes bottom space */
+}
+
+/* --- Pop-up Panels (Read More & Show More) --- */
+.readmorePanel,
+.showMoreInfo {
+    display: none; /* Hidden by default */
+    position: fixed; /* Use fixed to stay in place when scrolling */
+    width: 80vw;
+    max-width: 800px; /* Max width for larger screens */
+    max-height: 80vh; /* Limit height */
+    background-color: #ffffff; /* White background */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Softer, larger shadow */
+    z-index: 1050; /* Ensure it's above other content */
+    overflow: hidden; /* Needed for internal scrolling */
+    flex-direction: column; /* Align items vertically */
+}
+
+.readmorePanel {
+     width: 60vw; /* Slightly smaller width for readmore */
+     max-width: 700px;
+     padding: 50px 40px 30px 40px; /* More padding */
+     align-items: center; /* Center content */
+     justify-content: center;
+}
+
+.showMoreInfo {
+     padding: 60px 20px 30px 20px; /* Adjust padding */
+     align-items: center; /* Center content vertically */
+}
+
+.closereadmorePanel,
+.closeShowMoreInfo {
+    position: absolute;
+    height: 35px; /* Slightly larger */
+    width: 35px;
+    border-radius: 50%; /* Circular close button */
+    top: 15px; /* Consistent positioning */
+    right: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #eee; /* Light background */
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    cursor: pointer;
+    border: 1px solid #ddd; /* Subtle border */
+}
+
+.closereadmorePanel img,
+.closeShowMoreInfo img {
+    height: 50%; /* Adjust icon size */
+    opacity: 0.7;
+}
+
+.closereadmorePanel:hover,
+.closeShowMoreInfo:hover {
+    background-color: #e0e0e0; /* Darker on hover */
+    transform: scale(1.1);
+}
+
+.readmorePanel p {
+    max-height: calc(80vh - 100px); /* Calculate max height considering padding */
+    width: 100%; /* Take full width inside padding */
+    font-family: "Poppins", serif;
+    font-weight: 300;
+    font-size: 1rem; /* Standard paragraph size */
+    color: #444;
+    text-align: justify;
+    overflow-y: auto; /* Enable scroll if content exceeds max height */
+    padding: 15px; /* Padding around text */
+    line-height: 1.8;
+}
+
+/* Styles for the "Show More Info" divs */
+.showMoreInfo .infoDiv {
+    width: 90%; /* Use more width */
+    max-width: 600px;
+    border-bottom: 1px solid #eee; /* Lighter border */
+    font-family: "Poppins", serif;
+    display: flex;
+    align-items: baseline; /* Align text baseline */
+    justify-content: space-between; /* Space out title and content */
+    padding: 15px 10px; /* Increased padding */
+    font-size: 1rem;
+}
+
+.showMoreInfo .infoDiv:last-child {
+    border-bottom: none;
+}
+
+.showMoreInfo .infoDivTitle {
+    width: auto; /* Adjust width automatically */
+    font-weight: 600;
+    color: #333;
+    padding-right: 15px; /* Space between title and content */
+    text-align: left; /* Align left */
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.showMoreInfo .infoDivContent {
+    width: auto; /* Adjust width */
+    font-weight: 300;
+    text-align: left; /* Align left */
+    color: #555;
+}
+
+/* --- Main Container (Layout Changed) --- */
+.container {
+    width: 90%; /* Use percentage for responsiveness */
+    max-width: 1300px; /* Wider max width */
+    margin: 5vh auto 40px auto; /* Top/bottom margin, centered horizontally */
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    gap: 30px; /* Gap between details and cover */
+    /* No background, border, padding - it's just a layout wrapper */
+}
+
+/* Book Details (Left Side) */
+.bookdetails {
+    flex: 2; /* Takes up more space (roughly 2/3) */
+    min-width: 320px; /* Minimum width before wrapping */
+    order: 1; /* Ensures it appears first visually if HTML order changes */
+    display: flex; /* Enable flex column layout inside */
+    flex-direction: column;
+}
+
+/* Book Cover (Right Side) */
+.bookCover {
+    flex: 1; /* Takes up less space (roughly 1/3) */
+    min-width: 280px; /* Minimum width */
+    display: flex;
+    justify-content: center; /* Center image horizontally */
+    align-items: flex-start; /* Align image to top */
+    padding: 10px; /* Optional padding around the image area */
+    order: 2; /* Ensures it appears second visually */
+}
+
+/* --- Styles for elements within .bookdetails --- */
+.bookdetails .bookTitle {
+    font-family: "Roboto Condensed", serif;
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #2c3e50; /* Darker blue-grey */
+    margin-bottom: 15px;
+    line-height: 1.3;
+}
+
+.bookdetails .reviewer {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.bookdetails .reviewerImage {
+    height: 45px;
+    width: 45px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #eee;
+    flex-shrink: 0;
+}
+
+.bookdetails .reviewerImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.bookdetails .reviewer a {
+    font-family: "Poppins", serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #34495e;
+}
+/* Hover handled by global 'a:hover' */
+
+.bookdetails .reviewerratting {
+    font-family: "Poppins", serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #27ae60; /* Green for rating */
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    border: 2px solid #27ae60; /* Green border */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e8f8f0; /* Light green background */
+    flex-shrink: 0;
+}
+
+.bookdetails .bookDescription {
+    width: 100%;
+    margin-bottom: 30px;
+    font-family: "Poppins", serif;
+    font-size: 1rem;
+    font-weight: 300;
+    color: #555;
+    text-align: justify;
+    line-height: 1.8;
+}
+
+/* Style for the "Read More" span inside description */
+.bookdetails .bookDescription p span#readMoreSpan {
+    color: #27ae60; /* Green */
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+.bookdetails .bookDescription p span#readMoreSpan:hover {
+    color: #2ecc71; /* Lighter green */
+}
+
+.bookdetails .author {
+    margin-top: 25px; /* Space before info rows */
+}
+
+.bookdetails .inforow {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0; /* Very light border */
+    font-size: 1rem;
+}
+
+.bookdetails .inforow:last-child {
+    border-bottom: none;
+}
+
+.bookdetails .inforow .inforowlabel {
+    width: 30%; /* Adjust label width */
+    min-width: 120px; /* Minimum width for label */
+    font-weight: 500; /* Medium weight labels */
+    color: #444; /* Darker label */
+    padding-right: 10px;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.bookdetails .inforow .inforowdata {
+    font-weight: 300; /* Lighter data */
+    color: #666; /* Grey data text */
+}
+/* Star rating specific style */
+.bookdetails .inforow .inforowdata:last-child { /* Assuming rating is last */
+    color: #f39c12; /* Gold color for stars */
+    font-size: 1.1rem; /* Slightly larger stars */
+}
+
+/* --- Button Styles --- */
+.bookdetails .allButtons {
+    width: 100%;
+    margin-top: auto; /* Pushes buttons to the bottom of .bookdetails flex column */
+    padding-top: 35px; /* Space above buttons */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* Common Button Style (Green Theme) */
+.allButtons .likeBtn,
+.allButtons .addToFavoBtn,
+.allButtons .addToReadingListBtn,
+.allButtons .moreDetails {
+    flex-grow: 1; /* Allow buttons to grow */
+    min-width: 160px; /* Minimum width before wrapping */
+    height: 45px; /* Consistent button height */
+    border-radius: 25px; /* Pill shape */
+    padding: 0 20px; /* Horizontal padding */
+    background-color: #27ae60; /* Primary Green */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: "Poppins", serif;
+    font-size: 0.95rem; /* Button text size */
+    font-weight: 500; /* Medium weight text */
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border: none; /* Remove default border */
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Subtle shadow */
+}
+
+.allButtons .likeBtn i,
+.allButtons .addToFavoBtn i,
+.allButtons .addToReadingListBtn i,
+.allButtons .moreDetails i {
+    margin-right: 8px; /* Space between icon and text */
+    font-size: 1.2em; /* Slightly larger icon */
+    color: white;
+}
+
+/* Hover effect for all buttons */
+.allButtons .likeBtn:hover,
+.allButtons .addToFavoBtn:hover,
+.allButtons .addToReadingListBtn:hover,
+.allButtons .moreDetails:hover {
+    background-color: #2ecc71; /* Lighter Green on hover */
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3); /* Green shadow on hover */
+    transform: translateY(-2px); /* Slight lift */
+}
+
+/* Specific button slight variations if needed */
+.allButtons .likeBtn {
+    background-color: #2ecc71; /* Start lighter green */
+}
+.allButtons .likeBtn:hover {
+     background-color: #27ae60; /* Darker on hover */
+}
+/* Optional: Different style for 'More Details' */
+.allButtons .moreDetails {
+     background-color: #7f8c8d; /* Neutral grey */
+}
+.allButtons .moreDetails:hover {
+     background-color: #95a5a6; /* Lighter grey */
+     box-shadow: 0 4px 15px rgba(127, 140, 141, 0.3);
+}
+
+/* --- Book Cover Image Style --- */
+.bookCover img {
+    width: 100%; /* Responsive width within its flex container */
+    max-width: 400px; /* Max width for the image */
+    height: auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 6px 10px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.bookCover img:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15), 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Comment Section (Full Width, No Box) --- */
+.commentSection {
+    width: 100%;
+    padding: 50px 8%; /* Generous padding */
+    margin-top: 50px; /* Space after main content */
+    background-color: #ffffff; /* White background to stand out */
+    border-top: 1px solid #eaeaea; /* Separator line */
+}
+
+.commentSection h2 {
+    font-family: "Roboto Condensed", serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #373f44;
+    margin-bottom: 40px;
+    text-align: center;
+    padding-bottom: 15px;
+    position: relative;
+}
+.commentSection h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background-color: #27ae60; /* Green underline */
+    border-radius: 2px;
+}
+
+/* Comment Form Styles (Wider, No Box Styling on Form itself) */
+.commentForm {
+    max-width: 1000px; /* Wider form */
+    margin: 0 auto 50px auto; /* Center form */
+    /* No background, padding, border on the form itself */
+}
+
+.commentForm h3 {
+     font-size: 1.5rem;
+     font-weight: 600;
+     margin-bottom: 30px;
+     color: #444;
+     text-align: center;
+}
+
+.commentForm .formGroup {
+    margin-bottom: 25px; /* Space between fields */
+}
+
+.commentForm label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: #555;
+    font-size: 1rem;
+}
+
+.commentForm textarea {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: "Poppins", serif;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: #fff; /* White background for input */
+    resize: vertical;
+    min-height: 120px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.06); /* Subtle inset shadow */
+}
+.commentForm textarea:focus {
+    border-color: #27ae60; /* Green border on focus */
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.15); /* Green glow */
+}
+
+/* --- Star Rating Styles --- */
+.star-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Space between stars */
+}
+
+.star-rating .star {
+    font-size: 2rem; /* Size of the stars */
+    color: #ccc; /* Default grey/unselected color */
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.1s ease;
+}
+
+.star-rating .star:hover {
+    transform: scale(1.15); /* Slightly larger on hover */
+    /* Hover color is handled by JS mouseover */
+}
+
+/* Style for selected stars (added/removed by JS) */
+.star-rating .star.selected {
+    color: #27ae60; /* Green color for selected */
+    /* color: #f39c12; */ /* Alternative: Gold color */
+}
+
+/* --- Submit Comment Button Style --- */
+.submitCommentBtn {
+    display: block;
+    width: auto; /* Auto width based on content */
+    min-width: 200px; /* Minimum width */
+    margin: 25px auto 0 auto; /* Center button */
+    background-color: #27ae60; /* Green */
+    color: white;
+    padding: 14px 35px; /* Generous padding */
+    border: none;
+    border-radius: 25px; /* Pill shape */
+    font-family: "Poppins", serif;
+    font-size: 1.1rem; /* Slightly larger text */
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease; /* Use 'all' for transform and shadow */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.submitCommentBtn:hover {
+    background-color: #2ecc71; /* Lighter green */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+}
+
+
+/* --- Comments List Styles --- */
+.commentsList {
+    margin-top: 40px;
+    max-width: 1000px; /* Match form width */
+    margin-left: auto;
+    margin-right: auto; /* Center the list container */
+}
+
+.comment {
+    display: flex;
+    gap: 20px; /* More space between avatar and content */
+    padding: 25px 0; /* Vertical padding, no horizontal padding needed */
+    border-bottom: 1px solid #eee; /* Separator line */
+}
+.comment:last-child {
+    border-bottom: none; /* No border for the last comment */
+}
+
+/* Comment Avatar */
+.commentAvatar {
+    width: 55px; /* Avatar size */
+    height: 55px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0; /* Prevent avatar from shrinking */
+    margin-top: 5px; /* Align slightly better with text */
+    border: 1px solid #ddd;
+    background-color: #f0f0f0; /* Fallback background */
+}
+
+
+
+.commentAvatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure image covers the circle */
+}
+
+/* Wrapper for comment text content */
+.commentContent {
+    flex-grow: 1; /* Take remaining space */
+    display: flex;
+    flex-direction: column; /* Stack header and body */
+}
+
+.commentHeader {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 15px; /* Row gap, Column gap */
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: #666; /* Grey for meta info */
+}
+
+.commentAuthor {
+    font-weight: 600;
+    color: #333;
+    font-size: 1rem; /* Slightly larger author name */
+}
+
+.commentRating {
+    color: #f39c12; /* Gold for stars */
+    font-weight: bold;
+    font-size: 1rem; /* Make stars same size as author */
+    line-height: 1; /* Adjust line height for stars */
+    /* Removed margin-right, using gap */
+}
+
+.commentDate {
+    font-style: italic;
+    margin-left: auto; /* Push date to the right on wider screens */
+    white-space: nowrap; /* Prevent date from wrapping */
+    padding-left: 10px; /* Space before date if pushed right */
+    color: #888; /* Lighter date color */
+}
+
+.commentBody {
+    color: #444;
+    line-height: 1.7;
+    text-align: left; /* Align comment text left */
+    font-size: 0.95rem; /* Standard comment text size */
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 992px) { /* Tablet */
+    .container {
+        width: 95%;
+        gap: 25px;
+    }
+    .bookdetails { flex-basis: 55%; } /* Adjust flex basis */
+    .bookCover { flex-basis: 40%; }
+
+    .commentSection { padding: 40px 6%; }
+    .commentForm, .commentsList { max-width: 90%; } /* Adjust max-width */
+}
+
+@media (max-width: 768px) { /* Mobile */
+    body { font-size: 15px; } /* Slightly smaller base font */
+
+    .container {
+        width: 95%;
+        flex-direction: column; /* Stack cover and details */
+        align-items: center; /* Center items when stacked */
+        gap: 0; /* Remove gap when stacked */
+    }
+
+    .bookdetails,
+    .bookCover {
+        width: 100%; /* Full width when stacked */
+        max-width: 600px; /* Limit width */
+        flex-basis: auto; /* Reset flex basis */
+        order: 0; /* Reset order */
+        padding: 15px;
+    }
+    .bookCover {
+        order: -1; /* Put cover on top */
+        padding-top: 20px;
+        padding-bottom: 30px; /* Add space below cover */
+    }
+    .bookCover img { max-width: 320px; margin: 0 auto; } /* Center smaller image */
+
+    .bookdetails .bookTitle { font-size: 2.2rem; text-align: center; }
+    .bookdetails .reviewer { justify-content: center; }
+    .bookdetails .inforow { flex-wrap: wrap; }
+    .bookdetails .inforow .inforowlabel { width: 100%; min-width: auto; margin-bottom: 3px; }
+    .bookdetails .inforow .inforowdata { margin-left: 0; } /* Align data below label */
+    .bookdetails .allButtons { justify-content: center; }
+    .bookdetails .allButtons > div { flex-grow: 0; min-width: 140px; } /* Adjust button size */
+
+    .commentSection { padding: 40px 5%; }
+    .commentForm, .commentsList { max-width: 100%; } /* Allow form/list to take full width */
+
+    .comment {
+        flex-direction: column; /* Stack avatar and content */
+        align-items: flex-start; /* Align items left */
+        gap: 15px;
+    }
+    .commentAvatar { margin-bottom: 0; } /* Remove margin handled by gap */
+
+    .commentHeader {
+        flex-direction: column; /* Stack header items vertically */
+        align-items: flex-start;
+        gap: 5px;
+    }
+    .commentDate {
+        margin-left: 0; /* Reset margin */
+        padding-left: 0;
+    }
+
+    .star-rating .star { font-size: 1.8rem; } /* Slightly smaller stars */
+    .submitCommentBtn { min-width: 180px; padding: 12px 30px; font-size: 1rem;}
+}
+
+.is-on-list{
+    background-color: #3498db !important;
+}
+
+
+
+.talkAI {
+    background: linear-gradient(
+        135deg,
+        #4a00e0,
+        #8e2de2,
+        #4a00e0,
+        #00c6ff,
+        #8e2de2
+    );
+    background-size: 900% 900%;
+    animation: gradientShift 50s ease infinite;
+    position: relative;
+    overflow: hidden;
+    /* Add existing styles back here if needed */
+    box-sizing: border-box;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.sentiment-analysis-section {
+    text-align: center;
+    margin-bottom: 30px; /* Space below sentiment */
+    margin-top: -10px;   /* Pull it slightly closer to the h2 */
+    position: relative;  /* Needed for absolute positioning if used */
+    min-height: 35px;    /* Ensure space while loading */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Space between loader and text */
+}
+
+/* Sentiment Loader (Spinner) */
+.sentiment-loader {
+    width: 24px; /* Spinner size */
+    height: 24px;
+    border: 3px solid rgba(46, 204, 113, 0.2); /* Light green track */
+    border-top-color: #27ae60; /* Darker green spinner color */
+    border-radius: 50%;
+    display: block; /* Use block or inline-block, doesn't need to be flex */
+    animation: sentimentSpin 0.8s linear infinite, sentimentFadeOut 0.4s ease 1.2s forwards; /* Spin, then fade out after 1.2s */
+    flex-shrink: 0; /* Prevent shrinking */
+    /* Removed unnecessary flex container properties */
+}
+
+@keyframes sentimentSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Fade out animation for the loader */
+@keyframes sentimentFadeOut {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0); /* Shrink out */
+        width: 0;
+        height: 0;
+        margin: 0;
+        border-width: 0; /* Remove border completely */
+        visibility: hidden; /* Hide after animation */
+    }
+}
+
+/* Sentiment Text */
+.sentiment-text {
+    font-size: 1rem;
+    color: #555;
+    font-weight: 500;
+    opacity: 0; /* Start hidden */
+    animation: sentimentFadeIn 2s ease 1.2s forwards; /* Fade in when loader fades out */
+    line-height: 1.4; /* Adjust line height if needed */
+    margin: 0; /* Reset margin */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.sentiment-text.no-sentiment {
+    opacity: 1;
+    animation: none; /* Ensure no-sentiment message is always visible */
+    color: #777;
+    font-style: italic;
+}
+
+.sentiment-text .sentiment-value {
+    font-weight: 700;
+    color: #333; /* Default color */
+    padding: 2px 6px; /* Optional: add slight padding */
+    border-radius: 4px; /* Optional: rounded corners */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Conditional coloring based on class added in HTML */
+.sentiment-text .sentiment-value.positive {
+    color: #27ae60; /* Green */
+    /* background-color: rgba(39, 174, 96, 0.1); */ /* Optional subtle background */
+}
+.sentiment-text .sentiment-value.negative {
+    color: #e74c3c; /* Red */
+    /* background-color: rgba(231, 76, 60, 0.1); */ /* Optional subtle background */
+}
+.sentiment-text .sentiment-value.neutral {
+    color: #7f8c8d; /* Grey */
+    /* background-color: rgba(127, 140, 141, 0.1); */ /* Optional subtle background */
+}
+
+.sentiment-text .sentiment-score {
+    font-size: 0.85em;
+    color: #666;
+    margin-left: 4px;
+}
+
+/* Fade in animation for the text */
+@keyframes sentimentFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px); /* Optional: slight move up effect */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

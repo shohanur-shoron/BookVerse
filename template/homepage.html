@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+        p {
+            margin: 10px 0;
+            font-size: 16px;
+            color: #333;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .logout-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+        .create-btn {
+            background-color: #007bff;
+            color: white;
+            margin-right: 10px;
+        }
+        .create-btn:hover {
+            background-color: #0056b3;
+        }
+        .login-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        .login-btn:hover {
+            background-color: #218838;
+        }
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% if user.is_authenticated %}
+            <p>Welcome, {{ user.username }}!</p>
+            <p>Full Name: {{ user.get_full_name }}</p>
+            <p>Phone Number: {{ user.profile.phone }}</p>
+            <a href="{% url 'logout_user' %}"><button class="logout-btn">Logout</button></a>
+        {% else %}
+            <a href="{% url 'create_account' %}"><button class="create-btn">Create Account</button></a>
+            <a href="{% url 'login_user' %}"><button class="login-btn">Login</button></a>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookVerse - AI</title>
+    <link rel="stylesheet" href="{% static 'style/gemini.css' %}">
+    <link rel="stylesheet" href="{% static 'style/HomePageStyle.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+</head>
+<body>
+
+    <div class="sideMenu" id="sideMenu">
+        <div class="proInfo">
+            <div class="proImageInSideMenu">
+                {% if user.profile.resized_image %}
+                    <img src="{{ user.profile.resized_image.url }}" alt="">
+                {% elif user.profile.image %}
+                    <img src="{{ user.profile.image.url }}" alt="">
+                {% else %}
+                    <img src="{% static 'images/icons8-user-default-96.png' %}" alt="">
+                {% endif %}
+            </div>
+            <div class="nameAndUsername">
+                <p>{{ user.username }}</p>
+                <p>{{  user.get_full_name  }}</p>
+            </div>
+            <div class="closeBtn" id="closeBtn">
+                <img src="{% static 'images/icons8-cross-24 (2).png' %}" alt="">
+            </div>
+        </div>
+
+        <a href="{% url 'update_account' %}" class="setProfile genericStyle flex">
+            <img src="{% static 'images/icons8-face-60.png' %}" alt="">
+            <p>Set Profile</p>
+        </a>
+        <div class="intersection"></div>
+
+        <a href="{% url 'user_profile' %}" class="genericStyle flex">
+            <img src="{% static 'images/icons8-customer-64.png' %}" alt="">
+            <p>Your Profile</p>
+        </a>
+        <a href="#" class="genericStyle flex">
+            <img src="{% static 'images/icons8-books-64.png' %}" alt="">
+            <p>Your Books</p>
+        </a>
+        <a href="#" class="genericStyle flex">
+            <img src="{% static 'images/icons8-favourite-64.png' %}" alt="">
+            <p>Your Favourite</p>
+        </a>
+        <a href="#" class="genericStyle flex">
+            <img src="{% static 'images/icons8-like-32.png' %}" alt="">
+            <p>Your Likes</p>
+        </a>
+        <a href="#" class="genericStyle flex">
+            <img src="{% static 'images/icons8-comments-64.png' %}" alt="">
+            <p>Your Comments</p>
+        </a>
+        <a href="#" class="genericStyle flex">
+            <img src="{% static 'images/icons8-time-machine-32.png' %}" alt="">
+            <p>Recently seen</p>
+        </a>
+        <a href="#" class="genericStyle flex">
+            <img src="{% static 'images/icons8-status-64.png' %}" alt="">
+            <p>Reading Status</p>
+        </a>
+        <a href="#" class="genericStyle flex">
+            <img src="{% static 'images/icons8-task-completed-64.png' %}" alt="">
+            <p>Finished Reading</p>
+        </a>
+        <a href="#" class="genericStyle flex">
+            <img src="{% static 'images/icons8-open-book-64.png' %}" alt="">
+            <p>Read in Future</p>
+        </a>
+        <div class="intersection"></div>
+        {% if not user.profile.is_reviewer %}
+        <a href="{% url 'congratulations_page' %}" class="genericStyle flex">
+            <img src="{% static 'images/icons8-review-64.png' %}" alt="">
+            <p>Become a Reviewer</p>
+        </a>
+        {% else %}
+        <a href="{% url 'create_book' %}" class="genericStyle flex">
+        <img src="{% static 'images/icons8-book-6400.png' %}" alt="">
+        <p>Add a Book</p>
+        </a>
+        {% endif %}
+        <a href="#" class="genericStyle flex">
+            <img src="{% static 'images/icons8-author-64.png' %}" alt="">
+            <p>Become an Author</p>
+        </a>
+        <a href="#" class="genericStyle flex">
+            <img src="{% static 'images/icons8-categorize-64.png' %}" alt="">
+            <p>Add a Category</p>
+        </a>
+        <a href="{% url 'find_book_ai' %}" class="genericStyle flex">
+            <img src="{% static 'images/icons8-ai-96.png' %}" alt="">
+            <p>Find Book with AI</p>
+        </a>
+        <a href="{% url 'agent_chat_page' %}" class="genericStyle flex">
+            <img src="{% static 'images/icons8-ai-96.png' %}" alt="">
+            <p>Manage Account with AI</p>
+        </a>
+        <div class="intersection"></div>
+        <a href="{% url 'logout_user' %}" class="genericStyle flex">
+            <img src="{% static 'images/icons8-logout-64.png' %}" alt="">
+            <p>Log-out</p>
+        </a>
+    </div>
+    <div class="sideMenuCover" id="sideMenuCover"></div>
+
+
+
+    <div class="page-container">
+
+        <button class="back-button" id="back-button" title="Go Back">
+            <i class="fas fa-arrow-left"></i>
+            <span class="back-text">Back</span>
+        </button>
+
+        <div class="profile-picture" id="profile-picture">
+            <img src="{{ user.profile.image.url }}" alt="User Profile Picture">
+        </div>
+
+        <div class="chat-messages-container">
+            <div class="chat-messages" id="chat-messages">
+                <img class="message user book-cover-gemini" src="{{ book.image.url }}">
+                <div class="message user">Tell me more about this book!</div>
+                <p class="hidden" id="starting-prompt">{{ prompt }}</p>
+                <!-- Chat messages will appear here -->
+            </div>
+        </div>
+
+        <footer class="chat-input-area">
+            <div class="input-wrapper">
+                <form id="chat-form" class="chat-form">
+                    <input type="text" id="prompt" name="prompt" placeholder="Start describing here" required autocomplete="off">
+                    <button type="submit" id="send-button" aria-label="Send Message">
+                        <i class="fas fa-arrow-up"></i>
+                    </button>
+                </form>
+                <p class="disclaimer">Please describe your reading preferences in detail for the best category recommendations.</p>
+            </div>
+        </footer>
+    </div>
+
+
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@google/generative-ai/+esm"></script>
+
+    <script src="{% static 'js/marked.min.js' %}"></script>
+    <script type="module" src="{% static 'js/gemini2.js' %}"></script>
+    <script src="{% static 'js/highlight.min.js' %}"></script>
+    <script src="{% static 'js/scripts-specific-book.js' %}"></script>
+
+
+
+
+
+</body>
+</html>

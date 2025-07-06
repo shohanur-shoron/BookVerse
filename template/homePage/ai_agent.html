@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookVerse - AI</title>
+    <link rel="stylesheet" href="{% static 'style/gemini.css' %}">
+    <link rel="stylesheet" href="{% static 'style/HomePageStyle.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"> <!-- Use a theme like github-dark -->
+    {% csrf_token %} <!-- Ensure CSRF token is available -->
+</head>
+<body>
+
+    <div class="sideMenu" id="sideMenu">
+        <div class="proInfo">
+            <div class="proImageInSideMenu">
+                {% if user.profile.resized_image %}
+                    <img src="{{ user.profile.resized_image.url }}" alt="">
+                {% elif user.profile.image %}
+                    <img src="{{ user.profile.image.url }}" alt="">
+                {% else %}
+                    <img src="{% static 'images/icons8-user-default-96.png' %}" alt="">
+                {% endif %}
+            </div>
+            <div class="nameAndUsername">
+                <p>{{ user.username }}</p>
+                <p>{{  user.get_full_name  }}</p>
+            </div>
+            <div class="closeBtn" id="closeBtn">
+                <img src="{% static 'images/icons8-cross-24 (2).png' %}" alt="">
+            </div>
+        </div>
+
+        <a href="{% url 'update_account' %}" class="setProfile genericStyle flex">
+            <img src="{% static 'images/icons8-face-60.png' %}" alt="">
+            <p>Set Profile</p>
+        </a>
+        <div class="intersection"></div>
+
+        <a href="{% url 'user_profile' %}" class="genericStyle flex">
+            <img src="{% static 'images/icons8-customer-64.png' %}" alt="">
+            <p>Your Profile</p>
+        </a>
+        <a href="#" class="genericStyle flex">
+            <img src="{% static 'images/icons8-books-64.png' %}" alt="">
+            <p>Your Books</p>
+        </a>
+        <a href="{% url 'your_favorites' %}" class="genericStyle flex">
+            <img src="{% static 'images/icons8-favourite-64.png' %}" alt="">
+            <p>Your Favourite</p>
+        </a>
+        <a href="{% url 'liked_books' %}" class="genericStyle flex">
+            <img src="{% static 'images/icons8-like-32.png' %}" alt="">
+            <p>Your Likes</p>
+        </a>
+        <a href="{% url 'your_comments' %}" class="genericStyle flex">
+            <img src="{% static 'images/icons8-comments-64.png' %}" alt="">
+            <p>Your Comments</p>
+        </a>
+        <a href="{% url 'recently_seen' %}" class="genericStyle flex">
+            <img src="{% static 'images/icons8-time-machine-32.png' %}" alt="">
+            <p>Recently seen</p>
+        </a>
+        <a href="{% url 'currently_reading_books' %}" class="genericStyle flex">
+            <img src="{% static 'images/icons8-status-64.png' %}" alt="">
+            <p>Reading Status</p>
+        </a>
+        <a href="{% url 'finish_reading_books' %}" class="genericStyle flex">
+            <img src="{% static 'images/icons8-task-completed-64.png' %}" alt="">
+            <p>Finished Reading</p>
+        </a>
+        <a href="{% url 'want_to_read_books' %}" class="genericStyle flex">
+            <img src="{% static 'images/icons8-open-book-64.png' %}" alt="">
+            <p>Read in Future</p>
+        </a>
+        <div class="intersection"></div>
+        {% if not user.profile.is_reviewer %}
+        <a href="{% url 'congratulations_page' %}" class="genericStyle flex">
+            <img src="{% static 'images/icons8-review-64.png' %}" alt="">
+            <p>Become a Reviewer</p>
+        </a>
+        {% else %}
+        <a href="{% url 'create_book' %}" class="genericStyle flex">
+        <img src="{% static 'images/icons8-book-6400.png' %}" alt="">
+        <p>Add a Book</p>
+        </a>
+        {% endif %}
+        <a href="#" class="genericStyle flex">
+            <img src="{% static 'images/icons8-author-64.png' %}" alt="">
+            <p>Become an Author</p>
+        </a>
+        <a href="#" class="genericStyle flex">
+            <img src="{% static 'images/icons8-categorize-64.png' %}" alt="">
+            <p>Add a Category</p>
+        </a>
+        <a href="{% url 'find_book_ai' %}" class="genericStyle flex">
+            <img src="{% static 'images/icons8-ai-96.png' %}" alt="">
+            <p>Find Book with AI</p>
+        </a>
+
+        <a href="{% url 'agent_chat_page' %}" class="genericStyle flex">
+            <img src="{% static 'images/icons8-ai-96.png' %}" alt="">
+            <p>Manage Account with AI</p>
+        </a>
+        <div class="intersection"></div>
+        <a href="{% url 'logout_user' %}" class="genericStyle flex">
+            <img src="{% static 'images/icons8-logout-64.png' %}" alt="">
+            <p>Log-out</p>
+        </a>
+    </div>
+    <div class="sideMenuCover" id="sideMenuCover"></div>
+
+    <div class="page-container">
+
+        <button class="back-button" id="back-button" title="Go Back">
+            <i class="fas fa-arrow-left"></i>
+            <span class="back-text">Back</span>
+        </button>
+
+        <div class="profile-picture" id="profile-picture">
+             {% if user.profile.resized_image %}
+                <img src="{{ user.profile.resized_image.url }}" alt="User Profile Picture">
+             {% elif user.profile.image %}
+                 <img src="{{ user.profile.image.url }}" alt="User Profile Picture">
+             {% else %}
+                 <img src="{% static 'images/icons8-user-default-96.png' %}" alt="User Profile Picture">
+             {% endif %}
+        </div>
+
+        <div class="chat-messages-container">
+            <div class="chat-messages" id="chat-messages">
+                <!-- Initial Greeting (can be kept or removed) -->
+                <div class="message initial-greeting" id="initial-greeting">
+                    <span>Hello, {{ user.get_full_name|default:user.username }}</span>
+                    <p class="disclaimer" style="font-size: 1rem;">How can I help you manage your library today?</p>
+                </div>
+                <!-- User and Bot chat messages will appear here -->
+
+
+
+
+
+            </div>
+            <!-- Div for SSE Processing Logs -->
+            <div class="processing-log" id="processing-log">
+                 <div class="log-entry log-info"><span class="log-timestamp">[{{ time }}]</span><span class="log-type">[INFO]</span><span class="log-message">Initializing Agent...[done]</span></div>
+            </div>
+        </div>
+
+        <footer class="chat-input-area">
+            <div class="input-wrapper">
+                <form id="chat-form" class="chat-form">
+                    <input type="text" id="prompt" name="prompt" placeholder="Ask about your library..." required autocomplete="off">
+                    <button type="submit" id="send-button" aria-label="Send Message">
+                        <i class="fas fa-arrow-up"></i>
+                    </button>
+                </form>
+                <p class="disclaimer">Examples: "Show my favorites", "Mark 'Dune' as reading", "Remove '1984' from favorites".</p>
+            </div>
+        </footer>
+    </div>
+
+    {% csrf_token %}
+
+    <!-- Side Menu Script (Keep as is) -->
+    <script>
+        const closeBtn = document.getElementById('closeBtn');
+        const sideMenu = document.getElementById('sideMenu');
+        const sideMenuCover = document.getElementById('sideMenuCover');
+        const profileImage = document.getElementById('profile-picture');
+        // Simple scroll lock functions (replace with more robust solution if needed)
+        const disableScroll = () => document.body.style.overflow = 'hidden';
+        const enableScroll = () => document.body.style.overflow = '';
+
+        const closeSidePanel = () => {
+            sideMenu.style.transform = 'translateX(100%)'; // Adjust if needed
+            sideMenuCover.style.display = 'none';
+            sideMenuCover.style.opacity = '0';
+            enableScroll();
+        };
+        const openSidePanel = () => {
+            sideMenu.style.transform = 'translateX(0)';
+            sideMenuCover.style.display = 'block';
+            sideMenuCover.style.opacity = '1';
+            disableScroll();
+        };
+        closeBtn?.addEventListener('click', closeSidePanel);
+        sideMenuCover?.addEventListener('click', closeSidePanel);
+        profileImage?.addEventListener('click', openSidePanel);
+
+        // Back button functionality
+        const backButton = document.getElementById('back-button');
+        backButton?.addEventListener('click', () => {
+            window.history.back(); // Standard browser back action
+        });
+    </script>
+
+    <script src="{% static 'js/marked.min.js' %}"></script>
+    <script src="{% static 'js/highlight.min.js' %}"></script>
+
+    </script>
+
+
+    <script type="module">
+
+        const chatMessages = document.getElementById('chat-messages');
+        const processingLog = document.getElementById('processing-log');
+        const chatForm = document.getElementById('chat-form');
+        const promptInput = document.getElementById('prompt');
+        const sendButton = document.getElementById('send-button');
+        const initialGreeting = document.getElementById('initial-greeting');
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        let eventSource = null;
+
+        // --- Helper Functions (Keep As Is) ---
+        function addChatMessage(sender, content, isHtml = false) {
+            if (initialGreeting && !initialGreeting.classList.contains('hidden')) {
+                initialGreeting.classList.add('hidden');
+            }
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender);
+
+            if (isHtml) {
+                // Use a sanitizer if rendering potentially unsafe HTML
+                // For now, assuming Markdown from Gemini is reasonably safe
+                messageDiv.innerHTML = content;
+                 // Apply syntax highlighting *after* content is added
+                 messageDiv.querySelectorAll('pre code').forEach((block) => {
+                    if (typeof hljs !== 'undefined') {
+                        try {
+                            hljs.highlightElement(block);
+                        } catch (e) { console.error("Highlight.js error:", e); }
+                    }
+                });
+            } else {
+                messageDiv.textContent = content;
+            }
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function logProcessingMessage(type, data) {
+            const timestamp = new Date().toLocaleTimeString();
+            const messageText = data && data.message ? String(data.message) : JSON.stringify(data);
+            const logEntry = document.createElement('div');
+            logEntry.classList.add('log-entry', `log-${type}`);
+
+            const timestampSpan = document.createElement('span');
+            timestampSpan.className = 'log-timestamp';
+            timestampSpan.textContent = `[${timestamp}]`;
+
+            const typeSpan = document.createElement('span');
+            typeSpan.className = 'log-type';
+            typeSpan.textContent = `[${type.toUpperCase()}]`;
+
+            const messageSpan = document.createElement('span');
+            messageSpan.className = 'log-message';
+            messageSpan.textContent = messageText;
+
+            logEntry.appendChild(timestampSpan);
+            logEntry.appendChild(typeSpan);
+            logEntry.appendChild(messageSpan);
+
+            processingLog.appendChild(logEntry);
+            processingLog.scrollTop = processingLog.scrollHeight;
+        }
+
+        function clearProcessingLog() {
+            processingLog.innerHTML = '';
+        }
+
+        // --- Form Submission Handler (Keep As Is, except SSE listener part) ---
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userQuery = promptInput.value.trim();
+
+            if (!userQuery) {
+                promptInput.focus();
+                return;
+            }
+
+            promptInput.disabled = true;
+            sendButton.disabled = true;
+            sendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            addChatMessage('user', userQuery);
+            promptInput.value = '';
+            clearProcessingLog();
+            logProcessingMessage('info', { message: "Sending request..." });
+
+            if (eventSource) {
+                eventSource.close();
+                console.log("Closed previous SSE connection.");
+            }
+
+            const initiateUrl = "{% url 'initiate_nlp_processing' %}";
+
+            try {
+                const postResponse = await fetch(initiateUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({ query: userQuery })
+                });
+
+                if (!postResponse.ok) {
+                    let errorMsg = `Initiation failed: ${postResponse.status} ${postResponse.statusText}`;
+                    try {
+                        const errorData = await postResponse.json();
+                        errorMsg = `Initiation failed: ${errorData.message || postResponse.statusText}`;
+                    } catch (jsonError) { /* Ignore */ }
+                    throw new Error(errorMsg);
+                }
+
+                const initiationData = await postResponse.json();
+                const streamId = initiationData.stream_id;
+
+                if (!streamId) { // Basic check
+                    throw new Error("Did not receive a valid stream ID from the server.");
+                }
+
+                logProcessingMessage('info', { message: `Received stream ID. Connecting to stream...` });
+
+                // --- Construct stream URL dynamically ---
+                // Get base URL (works for http/https, dev/prod)
+                const baseUrl = window.location.origin;
+                // Use the Django URL resolver result if possible, otherwise manually construct path
+                // IMPORTANT: Ensure your url name 'stream_nlp_results' correctly resolves
+                //            Adjust '/agent/' prefix if your app urls are namespaced differently
+                const streamPath = `/agent/stream/${streamId}/`; // Adjust path if needed
+                let streamUrl = `${baseUrl}${streamPath}`;
+                console.log("Connecting to SSE URL:", streamUrl); // Debugging URL
+
+                eventSource = new EventSource(streamUrl); // Connect using GET
+
+                // --- SSE Event Listeners ---
+
+                eventSource.onopen = function() {
+                    console.log("SSE connection opened successfully.");
+                    logProcessingMessage('info', { message: "Connection established. Waiting for processing..." });
+                    // Don't restore button yet, wait for 'finished' or 'error'
+                };
+
+                eventSource.addEventListener('status', function(event) {
+                    try {
+                        const data = JSON.parse(event.data);
+                        logProcessingMessage('status', data);
+                    } catch (e) { console.error("Failed to parse status event data:", event.data, e); }
+                });
+
+                eventSource.addEventListener('update', function(event) {
+                    try {
+                        const data = JSON.parse(event.data);
+                        logProcessingMessage('update', data);
+                    } catch (e) { console.error("Failed to parse update event data:", event.data, e); }
+                });
+
+                 eventSource.addEventListener('warning', function(event) {
+                    try {
+                        const data = JSON.parse(event.data);
+                        logProcessingMessage('warning', data);
+                    } catch (e) { console.error("Failed to parse warning event data:", event.data, e); }
+                });
+
+                // Listener for server-sent 'error' events AND connection errors
+                eventSource.onerror = function(event) {
+                     let errorDisplayed = false;
+                     // Check if it's a server-sent custom error *before* closing
+                     if (event.data) {
+                         try {
+                             const data = JSON.parse(event.data);
+                             logProcessingMessage('error', data);
+                             // Add server error message to chat if it seems final
+                             if (data.message && !event.target.readyState === EventSource.CLOSED) {
+                                addChatMessage('error', `Error: ${data.message}`);
+                                errorDisplayed = true;
+                             }
+                         } catch (e) {
+                             console.error("Received non-JSON error event data:", event.data);
+                             logProcessingMessage('error', { message: `Server Error: ${event.data}` });
+                             if(!errorDisplayed) addChatMessage('error', `Server Error: ${event.data}`);
+                             errorDisplayed = true;
+                         }
+                     }
+
+                    // Check if the connection is actually closed or closing
+                    if (event.eventPhase === EventSource.CLOSED || event.target.readyState === EventSource.CLOSED) {
+                         console.error("SSE Connection Error or closed:", event);
+                         logProcessingMessage('error', { message: "Connection lost or closed by server." });
+                         // Avoid duplicate error messages if one was already shown from event.data
+                         if (!errorDisplayed) {
+                            addChatMessage('error', "Error: Lost connection during processing or request failed.");
+                         }
+                     } else {
+                         // Other connection-related error (e.g., network issue before closing)
+                         console.error("SSE Generic Error:", event);
+                         logProcessingMessage('error', { message: "An unknown connection error occurred." });
+                         if (!errorDisplayed) {
+                             addChatMessage('error', "Error: A connection problem occurred.");
+                         }
+                     }
+
+                     // Ensure UI is re-enabled if connection truly drops unexpectedly *before* finished event
+                     // The 'finished' handler is the primary place to re-enable UI
+                     if (sendButton.disabled && event.target.readyState === EventSource.CLOSED){
+                         promptInput.disabled = false;
+                         sendButton.disabled = false;
+                         sendButton.innerHTML = '<i class="fas fa-arrow-up"></i>';
+                         if(eventSource) eventSource.close(); // Explicitly close on error
+                     }
+                     // Don't close automatically on all errors, server might send 'finished' after an 'error' event
+                };
+
+                // ====================================================
+                // MODIFIED 'finished' Event Listener
+                // ====================================================
+                eventSource.addEventListener('finished', function(event) {
+                    console.log("Received 'finished' event.");
+                    try {
+                        const data = JSON.parse(event.data);
+                        logProcessingMessage('finished', { message: `Processing complete. Status: ${data.status || 'unknown'}` });
+
+                        // --- Get the summary message ---
+                        let finalBotMessage = "Finished."; // Default fallback
+                        if (data.summary_message && typeof data.summary_message === 'string') {
+                            finalBotMessage = data.summary_message;
+                        } else {
+                            // Fallback if summary_message is missing
+                            finalBotMessage = `Processing finished with status: ${data.status || 'unknown'}. Summary generation failed or was unavailable.`;
+                            console.warn("Finished event missing 'summary_message'. Data:", data);
+                        }
+
+                        // --- Render the summary using marked.js ---
+                        let renderedHtml = finalBotMessage; // Default to raw text if marked fails/unavailable
+                        if (typeof marked !== 'undefined') {
+                            try {
+                                // Assuming Gemini output is safe enough for now.
+                                // Consider DOMPurify if sanitization is critical.
+                                // Use `marked.parse` which handles Markdown including bold etc.
+                                renderedHtml = marked.parse(finalBotMessage, { breaks: true }); // breaks:true converts \n to <br>
+                            } catch (e) {
+                                console.error("Marked.js parsing error:", e);
+                                // Escape HTML for safe display if Marked fails
+                                renderedHtml = "Error rendering response. Raw summary:<br>" + finalBotMessage.replace(/</g, "<").replace(/>/g, ">").replace(/\n/g, "<br>");
+                            }
+                        } else {
+                             console.warn("marked.js library not found. Displaying raw summary.");
+                             // Basic escaping and line breaks for raw display
+                             renderedHtml = finalBotMessage.replace(/</g, "<").replace(/>/g, ">").replace(/\n/g, "<br>");
+                        }
+
+                        // Add the final rendered summary to the chat
+                        addChatMessage('bot', renderedHtml, true);
+
+                    } catch (e) {
+                        console.error("Failed to parse 'finished' event data or render summary:", event.data, e);
+                        logProcessingMessage('error', { message: "Error processing final results." });
+                        addChatMessage('error', "Failed to display the final summary properly.");
+                    } finally {
+                        // --- Cleanup ---
+                        if (eventSource) {
+                            eventSource.close(); // Close the connection gracefully
+                            console.log("SSE stream finished and closed by client.");
+                        }
+                        // Re-enable form now that processing is complete
+                        promptInput.disabled = false;
+                        sendButton.disabled = false;
+                        sendButton.innerHTML = '<i class="fas fa-arrow-up"></i>'; // Restore icon
+                    }
+                });
+                // --- End SSE Event Listeners ---
+
+            } catch (error) {
+                // Catch errors from the initial POST fetch or EventSource setup
+                console.error("Error during initiation or SSE setup:", error);
+                addChatMessage('error', `Error: ${error.message || 'Could not start processing.'}`);
+                logProcessingMessage('error', { message: `Setup Error: ${error.message}` });
+
+                // Ensure UI is re-enabled on setup failure
+                promptInput.disabled = false;
+                sendButton.disabled = false;
+                sendButton.innerHTML = '<i class="fas fa-arrow-up"></i>';
+                if (eventSource) {
+                    eventSource.close();
+                }
+            }
+        });
+
+        // --- Window Unload Listener (Keep As Is) ---
+        window.addEventListener('beforeunload', function() {
+            if (eventSource && eventSource.readyState !== EventSource.CLOSED) {
+                console.log("Closing SSE connection due to page unload.");
+                eventSource.close();
+            }
+        });
+    </script>
+
+</body>
+</html>

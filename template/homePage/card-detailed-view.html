@@ -1,0 +1,338 @@
+{% extends "homePage/base.html" %}
+{% load static %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'style/card-view-detailed.css' %}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+{% endblock %}
+
+{% block title %}{{ book.name }} - BookVerse{% endblock title %}
+
+{% block content %}
+
+
+    <div class="readmorePanel" id="readmorePanel">
+        <div class="closereadmorePanel" id="closereadmorePanel">
+            <img src="{% static 'images/icons8-cross-48.png' %}" alt="Close">
+        </div>
+        <p>
+            {{ book.description|linebreaksbr }}
+        </p>
+    </div>
+
+    <div class="showMoreInfo" id="showMoreInfo">
+         <div class="closeShowMoreInfo" id="closeShowMoreInfo">
+            <img src="{% static 'images/icons8-cross-48.png' %}" alt="Close">
+         </div>
+
+         {% if book.publisher %}
+         <div class="infoDiv">
+            <div class="infoDivTitle">Publisher</div>
+            <div class="infoDivContent">{{ book.publisher.username }}</div>
+         </div>
+         {% endif %}
+
+         {% if book.published_time %}
+         <div class="infoDiv">
+            <div class="infoDivTitle">Published Date</div>
+            <div class="infoDivContent">{{ book.published_time|date:"F j, Y" }}</div>
+         </div>
+         {% endif %}
+
+         {% if book.chapters %}
+         <div class="infoDiv">
+             <div class="infoDivTitle">Chapters</div>
+             <div class="infoDivContent">{{ book.chapters }}</div>
+         </div>
+         {% endif %}
+         {% if book.favorites_chapters %}
+         <div class="infoDiv">
+             <div class="infoDivTitle">Favorite Chapters</div>
+             <div class="infoDivContent">{{ book.favorites_chapters }}</div>
+         </div>
+         {% endif %}
+         {% if book.favorites_quotes %}
+         <div class="infoDiv">
+             <div class="infoDivTitle">Favorite Quotes</div>
+             <div class="infoDivContent">{{ book.favorites_quotes|linebreaksbr }}</div>
+         </div>
+         {% endif %}
+         {% if book.series %}
+         <div class="infoDiv">
+             <div class="infoDivTitle">Series</div>
+             <div class="infoDivContent">{{ book.series }}</div>
+         </div>
+         {% endif %}
+         {% if book.best_character %}
+         <div class="infoDiv">
+             <div class="infoDivTitle">Best Character</div>
+             <div class="infoDivContent">{{ book.best_character }}</div>
+         </div>
+         {% endif %}
+         {% if book.awards %}
+         <div class="infoDiv">
+             <div class="infoDivTitle">Awards</div>
+             <div class="infoDivContent">{{ book.awards|linebreaksbr }}</div>
+         </div>
+         {% endif %}
+         {% if book.format %}
+         <div class="infoDiv">
+             <div class="infoDivTitle">Format</div>
+             <div class="infoDivContent">{{ book.format }}</div>
+         </div>
+         {% endif %}
+         {% if book.link %}
+          <div class="infoDiv">
+             <div class= "infoDivTitle" >Link</div>
+             <div class= "infoDivContent"><a href="{{ book.link }}" target= "_blank" rel="noopener noreferrer">Visit Link</a> ({{ book.link_clicked }} clicks)</div>
+         </div>
+         {% endif %}
+
+    </div>
+
+
+    <div class="container">
+        <div class="bookdetails">
+            <input type="hidden" id="bookId" value="{{ book.id }}">
+
+            <div class="bookTitle">{{ book.name }}</div>
+
+            <div class="reviewer">
+                 <div class= "reviewerImage">
+                    {% if book.publisher.profile.image %}
+                        <img id="userProfileImage" src="{{ book.publisher.profile.image.url }}" alt="{{ book.publisher.username }} Avatar">
+                    {% else %}
+                        {% if book.publisher.profile.gender == 'male' %}
+                            <img src="{% static 'images/male.png' %}" alt="Default Avatar">
+                         {% else %}
+                             <img src="{% static 'images/female.jpg' %}" alt="Default Avatar">
+                         {% endif %}
+                    {% endif %}
+                </div>
+                {% if book.publisher %}
+                    <a href="{% url 'reviewer_profile' book.publisher.id %}">{{ book.publisher.get_full_name }} (Reviewer)</a>
+                {% else %}
+                    <span>Unknown Author</span>
+                {% endif %}
+            </div>
+
+            <div class="bookDescription">
+                <p id="bookDescriptiontxt">
+                    {{ book.description|linebreaksbr }}
+                </p>
+            </div>
+
+            {% if book.authors %}
+            <div class="author inforow">
+                <div class="inforowlabel">Author</div>
+                <a href="#" class="inforowdata">{{ book.authors.name }}</a>
+            </div>
+            {% endif %}
+            {% if book.language %}
+            <div class="inforow">
+                <div class="inforowlabel">Language</div>
+                <div class="inforowdata">{{ book.language }}</div>
+            </div>
+            {% endif %}
+            {% if book.category %}
+            <div class="inforow">
+                <div class="inforowlabel">Category</div>
+                <div class="inforowdata">{{ book.category.name }}</div>
+            </div>
+            {% endif %}
+            {% if book.pages %}
+            <div class="inforow">
+                <div class="inforowlabel">Pages</div>
+                <div class="inforowdata">{{ book.pages }}</div>
+            </div>
+            {% endif %}
+            {% if book.price is not None %}
+            <div class="inforow">
+                <div class="inforowlabel">Price</div>
+                <div class="inforowdata">{{ book.price }} Tk</div>
+            </div>
+            {% endif %}
+            <div class="inforow">
+                <div class="inforowlabel">Views</div>
+                <div class="inforowdata">{{ book.total_views }}</div>
+            </div>
+             <div class="inforow">
+                <div class="inforowlabel">Avg. Rating</div>
+                <div class="inforowdata" >{{ average }}</div>
+            </div>
+            <div class="inforow">
+                <div class="inforowlabel">Reviewer Rating</div>
+                <div class="inforowdata" >{{ book.rating }}</div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="allButtons">
+                {% if user.is_authenticated %}
+                    <div class="likeBtn">
+                        <i class='bx bxs-like'></i>
+
+                        <p id="likeCount">{{ book.likes.count }}</p>
+                    </div>
+
+
+                    {% if book in favorite_books %}
+                        <div class="addToFavoBtn is-favourited" style="background-color: #e74c3c;">
+                            <i class='bx bxs-heart-circle'></i>
+                            <p>Favourited</p>
+                        </div>
+                    {% else %}
+                        <div class="addToFavoBtn">
+                            <i class='bx bxs-heart'></i>
+                            <p>Favourite</p>
+                        </div>
+                    {% endif %}
+                    {%  if book in reading_list %}
+                        <div class= "addToReadingListBtn is-on-list">
+                            <i class='bx bx-list-check'></i>
+                            <p>On List</p>
+                        </div>
+                    {% else %}
+                        <div class= "addToReadingListBtn">
+                            <i class='bx bx-list-plus'></i>
+                            <p>Add to List</p>
+                        </div>
+                    {% endif %}
+                {% else %}
+                     <div class="likeBtn" title="Login to like">
+                        <i class='bx bxs-like'></i><p>{{ book.likes.count }}</p>
+                     </div>
+                     <div class="addToFavoBtn" title="Login to favourite">
+                        <i class='bx bxs-heart'></i><p>Favourite</p>
+                     </div>
+                      <div class="addToReadingListBtn" title="Login to add">
+                        <i class='bx bx-list-plus'></i><p>Add to List</p>
+                     </div>
+                {% endif %}
+
+                <div class="moreDetails" id="moreDetails">
+                    <i class='bx bx-detail'></i>
+                    <p>More Details</p>
+                </div>
+
+                <a href="{% url 'specific_book_ai' book.id %}" class="moreDetails talkAI">
+                    <i class='bx bx-detail'></i>
+                    <p>Talk about this book</p>
+                </a>
+            </div>
+        </div>
+
+
+        <div class="bookCover">
+            {% if book.image %}
+                <img src="{{ book.image.url }}" alt="Book Cover: {{ book.name }}">
+            {% else %}
+                <img src="{% static 'images/no_book_cover.jpg' %}" alt="Book Cover: {{ book.name }}">
+            {% endif %}
+        </div>
+
+    </div>
+
+
+    <div class="commentSection">
+        <h2>Comments & Reviews</h2>
+
+        {% if user.is_authenticated %}
+            <form id="commentForm" class="commentForm">
+                {% csrf_token %}
+                <h3>Leave Your Review</h3>
+
+                <div class="formGroup">
+                    <label for="commentText">Your Comment:</label>
+                    <textarea id="commentText" name="comment_text" rows="5" required placeholder="Share your thoughts about this book..."></textarea>
+                </div>
+
+
+                <div class="formGroup">
+                    <label>Your Rating:</label>
+                    <div class="star-rating" id="starRatingContainer">
+                        <i class='bx bxs-star star' data-value="1" title="Terrible"></i>
+                        <i class='bx bxs-star star' data-value="2" title="Poor"></i>
+                        <i class='bx bxs-star star' data-value="3" title="Average"></i>
+                        <i class='bx bxs-star star' data-value="4" title="Good"></i>
+                        <i class='bx bxs-star star' data-value="5" title="Excellent"></i>
+                    </div>
+                    <input type="hidden" id="commentRatingValue" name="rating" value="0" required>
+                    <div id="ratingError" style="color: red; font-size: 0.9em; margin-top: 5px; display: none;">Please select a rating.</div>
+                </div>
+
+
+                <button type="submit" class="submitCommentBtn">Post Comment</button>
+            </form>
+        {% else %}
+            <p style="text-align: center; margin-bottom: 30px;">
+                Please <a href="{% url 'login_user' %}"><strong>login</strong></a> or <a href="{% url 'create_account' %}"><strong>register</strong></a> to leave a comment or review.
+            </p>
+        {% endif %}
+
+
+        <div class="sentiment-analysis-section" id="sentimentSection">
+            {% if comments %} {# Check if there are comments to analyze #}
+                <div class="sentiment-loader" id="sentimentLoader"></div>
+                <p class="sentiment-text" id="sentimentText">
+                    Overall Sentiment:
+                    <strong class="sentiment-value
+                        {% if sentiment == 'Overwhelmingly Positive' or sentiment == 'Positive' %} positive{% endif %}
+                        {% if sentiment == 'Overwhelmingly Negative' or sentiment == 'Negative' %} negative{% endif %}
+                        {% if sentiment == 'Neutral' or sentiment == 'Mixed' %} neutral{% endif %}
+                    ">
+                        {{ sentiment|default:"Calculating..." }}
+                    </strong>
+                </p>
+            {% else %}
+                 <p class="sentiment-text no-sentiment" style="opacity: 1; animation: none;">No comments yet for sentiment analysis.</p>
+            {% endif %}
+        </div>
+
+
+
+        <div id="commentsList" class="commentsList">
+            {% for comment in comments %}
+                <div class="comment">
+                    <div class="commentAvatar">
+                         {% if comment.user.profile.image %}
+                            <img src= "{{ comment.user.profile.image.url }}" alt="{{ comment.user.username }} Avatar">
+                        {% else %}
+                             {% if comment.user.profile.gender == 'male' %}
+                                <img src="{% static 'images/male.png' %}" alt="Default Avatar">
+                             {% else %}
+                                 <img src="{% static 'images/female.jpg' %}" alt="Default Avatar">
+                             {% endif %}
+                        {% endif %}
+                    </div>
+                    <div class="commentContent">
+                        <div class="commentHeader">
+                            <strong class="commentAuthor">{{ comment.user.username }}</strong>
+                            <span class="commentRating star-rating-display" title="{{ comment.rating }} Stars">
+                                 {% with rating=comment.rating|default:0 %}
+                                    {% for i in "12345" %}
+                                        {% if i|add:"0" <= rating %}
+                                            <i class='bx bxs-star'></i>
+                                        {% else %}
+                                            <i class='bx bx-star'></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endwith %}
+                            </span>
+                            <span>{{ comment.sentimentCategory }}</span>
+                            <span class="commentDate">- {{ comment.created_at|timesince }} ago</span>
+                        </div>
+                        <p class="commentBody">{{ comment.text|linebreaksbr }}</p>
+                    </div>
+                </div>
+            {% empty %}
+                <p style="text-align: center; color: #777;">Be the first to leave a comment!</p>
+            {% endfor %}
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'js/card-view-detailed.js' %}"></script>
+{% endblock%}

@@ -1,0 +1,247 @@
+{% extends 'homePage/base.html' %}
+{% load static %}
+
+{% block title %}{{ profile_user.username }}'s Profile{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'style/profile_page.css' %}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        /* Simple placeholder styling */
+        .placeholder-img {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #e0e0e0;
+            color: #757575;
+            font-size: 1.5rem; /* Adjust size */
+        }
+        .book-cover-placeholder {
+            width: 80px; /* Match typical book cover size */
+            height: 120px;
+            font-size: 0.8rem;
+        }
+        .author-img-placeholder {
+             width: 60px; /* Match typical author image size */
+            height: 60px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+        }
+         .profile-pic-placeholder {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+<div class="profile-container">
+
+    <aside class="profile-sidebar">
+        <div class="profile-pic-area">
+            {% if profile.image %}
+                <img src="{{ profile.image.url }}" alt="{{ profile_user.username }}'s profile picture" class="profile-pic">
+            {% else %}
+                <div class="profile-pic placeholder-img profile-pic-placeholder">
+                    <i class='bx bx-user'></i>
+                </div>
+            {% endif %}
+        </div>
+
+        <h1 class="profile-username">{{ profile_user.username }}</h1>
+        {% if profile_user.get_full_name %}
+            <p class="profile-fullname">{{ profile_user.get_full_name }}</p>
+        {% endif %}
+
+        {% if profile.is_reviewer %}
+            <span class="badge reviewer-badge"><i class='bx bxs-star'></i> Reviewer</span>
+        {% endif %}
+
+        <div class="profile-stats">
+            <div class="stat-item">
+                <span class="stat-value">{{ profile.total_views|default:"0" }}</span>
+                <span class="stat-label">Profile Views</span>
+            </div>
+            <div class="stat-item">
+                 {% comment %} Assuming you have a way to calculate/store this {% endcomment %}
+                <span class="stat-value">{{ profile.total_reviews|default:"0" }}</span>
+                <span class="stat-label">Reviews Written</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">{{ favorite_books.count }}</span>
+                <span class="stat-label">Favorites</span>
+            </div>
+        </div>
+
+        {% if request.user == profile_user %}
+            <a href="{% url 'update_account' %}" class="btn btn-edit-profile">
+                <i class='bx bx-edit'></i> Edit Profile
+            </a>
+        {% else %}
+             {% comment %} Optional: Add Follow button if you implement following users {% endcomment %}
+            <!-- <button class="btn btn-follow">Follow</button> -->
+        {% endif %}
+
+        <div class="profile-section">
+            <h3 class="section-title">Interests</h3>
+            {% if profile.interests.all %}
+                <div class="interests-list">
+                    {% for interest in profile.interests.all %}
+                        <span class="interest-tag">{{ interest.name }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="no-data">No interests specified yet.</p>
+            {% endif %}
+        </div>
+
+         {% comment %} Optional: Display contact info only to the logged-in user {% endcomment %}
+        {% if request.user == profile_user %}
+            <div class="profile-section">
+                <h3 class="section-title">Contact Info (Private)</h3>
+                {% if profile_user.email %}
+                    <p><i class='bx bx-envelope'></i> {{ profile_user.email }}</p>
+                {% endif %}
+                {% if profile.phone %}
+                     <p><i class='bx bx-phone'></i> {{ profile.phone }}</p>
+                {% endif %}
+                 {% if profile.gender %}
+                     <p><i class='bx bx-male-female'></i> {{ profile.get_gender_display|default:profile.gender|capfirst }}</p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+    </aside>
+
+    <main class="profile-main-content">
+
+        <section class="profile-section">
+            <h2 class="section-title">Favorite Books</h2>
+            {% if favorite_books %}
+                <div class="book-grid">
+                    {% for fav in favorite_books %}
+                        <div class="book-card-small">
+                            <a href="{% url 'book_detail_view' fav.book.id %}">
+                                {% if fav.book.image %}
+                                <img src="{{ fav.book.image.url }}" alt="{{ fav.book.name }}" class="book-cover">
+                                {% else %}
+                                 <div class="book-cover placeholder-img book-cover-placeholder">
+                                    <i class='bx bx-book'></i>
+                                </div>
+                                {% endif %}
+                                <p class="book-title">{{ fav.book.name }}</p>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="no-data">{{ profile_user.username }} hasn't added any favorites yet.</p>
+            {% endif %}
+        </section>
+
+        <section class="profile-section reading-status-section">
+             <h2 class="section-title">Reading Activity</h2>
+             {% comment %} Could use tabs here, or just sections {% endcomment %}
+
+             <div class="reading-list">
+                <h3 class="sub-section-title">Currently Reading <a style="text-decoration: none; color: #2b68ea;" href="{% url 'currently_reading_books' %}">(edit)</a></h3>
+                {% if books_reading %}
+                    <div class="book-grid">
+                        {% for status in books_reading %}
+                        <div class="book-card-small">
+                            <a href="{% url 'book_detail_view' status.book.id %}">
+                                {% if status.book.image %}
+                                <img src="{{ status.book.image.url }}" alt="{{ status.book.name }}" class="book-cover">
+                                {% else %}
+                                <div class="book-cover placeholder-img book-cover-placeholder"><i class='bx bx-book'></i></div>
+                                {% endif %}
+                                <p class="book-title">{{ status.book.name }}</p>
+                                {% if status.current_page > 0 and status.book.pages %}
+                                    <span class="reading-progress">Page {{status.current_page}}</span>
+                                {% endif %}
+                             </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="no-data">Not currently reading any books.</p>
+                {% endif %}
+             </div>
+
+             <div class="reading-list">
+                <h3 class="sub-section-title">Want to Read <a style="text-decoration: none; color: #2b68ea;" href="#">(edit)</a></h3>
+                 {% if books_to_read %}
+                    <div class="book-grid">
+                         {% for status in books_to_read %}
+                        <div class="book-card-small">
+                            <a href="{% url 'book_detail_view' status.book.id %}">
+                                {% if status.book.image %}
+                                <img src="{{ status.book.image.url }}" alt="{{ status.book.name }}" class="book-cover">
+                                {% else %}
+                                <div class="book-cover placeholder-img book-cover-placeholder"><i class='bx bx-book'></i></div>
+                                {% endif %}
+                                <p class="book-title">{{ status.book.name }}</p>
+                             </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                 {% else %}
+                    <p class="no-data">Reading list is empty.</p>
+                 {% endif %}
+            </div>
+
+             <div class="reading-list">
+                <h3 class="sub-section-title">Completed <a style="text-decoration: none; color: #2b68ea;" href="#">(edit)</a></h3>
+                 {% if books_completed %}
+                    <div class="book-grid">
+                         {% for status in books_completed %}
+                        <div class="book-card-small">
+                            <a href="{% url 'book_detail_view' status.book.id %}">
+                                {% if status.book.image %}
+                                <img src="{{ status.book.image.url }}" alt="{{ status.book.name }}" class="book-cover">
+                                {% else %}
+                                <div class="book-cover placeholder-img book-cover-placeholder"><i class='bx bx-book'></i></div>
+                                {% endif %}
+                                <p class="book-title">{{ status.book.name }}</p>
+                             </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                 {% else %}
+                     <p class="no-data">No books completed yet.</p>
+                 {% endif %}
+             </div>
+        </section>
+
+        <section class="profile-section">
+            <h2 class="section-title">Followed Authors</h2>
+            {% if followed_authors %}
+                <div class="author-list">
+                    {% for author in followed_authors %}
+                        <div class="author-card-small">
+                             <a href="{% url 'author_detail' author.id %}">
+                                {% if author.image %}
+                                    <img src="{{ author.image.url }}" alt="{{ author.name }}" class="author-image">
+                                {% else %}
+                                    <div class="author-image placeholder-img author-img-placeholder"><i class='bx bxs-user-detail'></i></div>
+                                {% endif %}
+                                <p class="author-name">{{ author.name }}</p>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+                 {% comment %} Optional: Link to a page showing all followed authors {% endcomment %}
+                <!-- <a href="#" class="see-all-link">See all followed authors...</a> -->
+            {% else %}
+                <p class="no-data">{{ profile_user.username }} isn't following any authors yet.</p>
+            {% endif %}
+        </section>
+
+        {% comment %} Optional: Add sections for Contributions here {% endcomment %}
+
+    </main>
+
+</div>
+{% endblock %}

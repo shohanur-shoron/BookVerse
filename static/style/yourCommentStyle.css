@@ -1,0 +1,131 @@
+
+.comments-grid-container {
+    display: grid;
+    /* Responsive Columns */
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 25px; /* Space between cards */
+    padding: 25px; /* Padding around the grid */
+    font-family: "Poppins", sans-serif; /* Apply Poppins font */
+    min-height: 100vh; /* Ensure container takes at least full viewport height */
+
+    /* CRITICAL FIX: Pack grid rows towards the top */
+    align-content: start;
+
+    /* Keep this: Aligns items to the top *within* their grid cell */
+    align-items: start;
+}
+
+/*------------------------------------*/
+/* Individual Comment Card            */
+/*------------------------------------*/
+.comment-card {
+    display: flex;
+    align-items: flex-start;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.07);
+    overflow: hidden;
+    transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.comment-card:hover {
+     box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
+     transform: translateY(-3px);
+}
+
+/*------------------------------------*/
+/* Book Cover Image                   */
+/*------------------------------------*/
+.comment-card__cover {
+    width: 100px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-right: 20px;
+    flex-shrink: 0;
+    background-color: #f0f0f0;
+}
+
+/*------------------------------------*/
+/* Content Area (Right Side)          */
+/*------------------------------------*/
+.comment-card__content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-width: 0; /* Essential for text-overflow */
+}
+
+/*------------------------------------*/
+/* Book Title                         */
+/*------------------------------------*/
+.comment-card__title {
+    font-size: 1.15em;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    color: #333;
+    /* Single Line Text Overflow */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.comment-card__title a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s ease;
+}
+
+.comment-card__title a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/*------------------------------------*/
+/* Comment Text                       */
+/*------------------------------------*/
+.comment-card__text {
+    font-size: 1em;
+    color: #555;
+    line-height: 1.5;
+    margin: 0 0 12px 0;
+    /* Multi-Line Text Overflow */
+    display: -webkit-box;
+    -webkit-line-clamp: 4; /* Max lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/*------------------------------------*/
+/* Rating Area (Stars)                */
+/*------------------------------------*/
+.comment-card__rating {
+    margin-top: auto; /* Pushes rating to bottom */
+    font-size: 1.05em;
+    color: #f0ad4e; /* Gold color for stars */
+    line-height: 1;
+}
+
+/* Font Awesome Star Styles */
+.comment-card__rating .fas { /* Filled */
+    /* Inherits color */
+}
+
+.comment-card__rating .far { /* Empty */
+     color: #d0d0d0; /* Light gray */
+}
+
+.movetoCurrent{
+    margin-top: 5px;
+    border-radius: 20px;
+    background-color: #157347;
+    color: #fff;
+    padding: 3px;
+    font-size: 0.8rem;
+    font-weight: 400;
+    text-decoration: none;
+    text-align: center;
+}

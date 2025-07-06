@@ -1,0 +1,38 @@
+{% extends "homePage/base.html" %}
+{% load static %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'style/event.css' %}">
+{% endblock %}
+
+{% block title %}Events - BookVerse{% endblock title %}
+
+{% block content %}
+
+    <div class="allEvents">
+        {% for event in events %}
+        <div class="event-card" style="background-image: url('{{ event.image.url }}');">
+            <div class="card-overlay"></div>
+
+            <!-- Content on top of the overlay -->
+            <div class="card-content">
+                <div class="text-content">
+                    <h2 class="event-name">{{ event.name }}</h2>
+                    <p class="event-description">
+                        {{ event.description }}
+                    </p>
+                    <p class="event-timestamp">
+                        <i class='bx bx-calendar'></i> {{ event.timestamp }}
+                    </p>
+                </div>
+                <div class="action-area">
+                    <a href="#" class="btn btn-interested">Interested</a>
+                </div>
+            </div>
+        </div>
+
+    {% endfor %}
+    </div>
+
+
+{% endblock %}

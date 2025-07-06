@@ -1,0 +1,72 @@
+{% extends '../homePage/base.html' %}
+{% load static %}
+
+{% block title %}Your Comments{% endblock %}
+
+{% block style %}
+  <link rel="stylesheet" href="{% static 'style/yourCommentStyle.css' %}">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+
+    h1 {
+        margin-bottom: 20px;
+        padding-left: 20px;
+    }
+  </style>
+{% endblock %}
+
+
+{% block content %}
+
+  {% if True %}
+    <div class="comments-grid-container">
+
+      {% for comment_data in comments_list %}
+        <div class="comment-card">
+
+          {# Book Cover #}
+          <img src="{{ comment_data.book_cover_url|default:'/static/images/placeholder_cover.png' }}"
+               alt="{{ comment_data.book_title }} Cover"
+               class="comment-card__cover">
+
+
+          <div class="comment-card__content">
+
+
+            <h3 class="comment-card__title">
+                 <a href="{% url 'book_detail_view' pk=comment_data.book_id %}">
+                     {{ comment_data.book_title }}
+                 </a>
+            </h3>
+
+
+            <p class="comment-card__text">
+                {{ comment_data.comment_text }}
+            </p>
+
+
+            <div class="comment-card__rating">
+                {% with rating=comment_data.rating|default:0 %}
+                    {% for i in "12345" %}
+                        {% if i|add:"0" <= rating %}
+                            <i class="fas fa-star"></i>
+                        {% else %}
+                            <i class="far fa-star"></i>
+                        {% endif %}
+                    {% endfor %}
+                 {% endwith %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+
+    </div>
+  {% else %}
+    <div style="padding: 20px;">
+        <p>You haven't commented on any books yet.</p>
+    </div>
+  {% endif %}
+
+{% endblock %}

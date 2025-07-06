@@ -1,0 +1,33 @@
+<!-- template.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Word Streaming</title>
+</head>
+<body>
+    <h1>Qwen2.5-3B-Instruct Streaming</h1>
+    <input type="text" id="prompt">
+    <button>Enter Ur Prompt</button>
+    <div onclick="generateText()" id="output"></div>
+
+    <script>
+        function generateText(){
+            const box = document.getElementById('prompt');
+            const prompt = box.value;
+            box.value = "";
+            const eventSource = new EventSource(`http://127.0.0.1:8000/llm/stream/?prompt=${encodeURIComponent(prompt)}`);
+
+            eventSource.onmessage = function(event) {
+                const outputDiv = document.getElementById("output");
+                console.log(event.data)
+                outputDiv.innerHTML += event.data; // Append each token to the output
+            };
+
+            eventSource.onerror = function(event) {
+                console.error("EventSource failed:", event);
+                eventSource.close();
+            };
+        }
+    </script>
+</body>
+</html>

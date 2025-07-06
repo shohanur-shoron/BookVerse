@@ -1,0 +1,461 @@
+/* static/style/basicinfo.css */
+
+/* ---=== Global Reset & Variables ===--- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #2ecc71; /* Green */
+    --primary-color-dark: #27ae60; /* Darker Green */
+    --secondary-color: #ecf0f1; /* Light Gray */
+    --text-color: #34495e; /* Dark Blue/Gray */
+    --text-color-light: #ffffff; /* White */
+    --border-color: #bdc3c7; /* Medium Gray */
+    --error-color: #e74c3c; /* Red */
+    --success-color: var(--primary-color); /* Green */
+    --panel-bg: #f8f9fa; /* Very Light Gray for Panel */
+    --content-bg: #ffffff; /* White */
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --font-primary: 'Poppins', 'Roboto', sans-serif;
+}
+
+body {
+    font-family: var(--font-primary);
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+/* ---=== Side Panel ===--- */
+.sidePanel {
+    width: 350px;
+    background-color: var(--panel-bg);
+    padding: 25px 15px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #e0e0e0;
+    box-shadow: 2px 0 5px var(--shadow-color);
+    transition: width 0.3s ease; /* Optional: if you ever want collapsible */
+}
+
+/* Back Button */
+.sidePanel .backBtn {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.sidePanel .backBtn i {
+    font-size: 1.5rem;
+    margin-right: 15px;
+    color: var(--text-color);
+    transition: transform 0.3s ease;
+}
+
+.sidePanel .backBtn a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.sidePanel .backBtn:hover {
+    background-color: #e9ecef; /* Lighter hover for panel bg */
+}
+
+.sidePanel .backBtn:hover i {
+    transform: translateX(-3px);
+}
+
+/* Main Navigation Buttons */
+.sidePanel .mainBtns {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Spacing between buttons */
+}
+
+.sidePanel .mainBtns a {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: var(--text-color);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 400;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.sidePanel .mainBtns a i {
+    font-size: 1.3rem;
+    margin-right: 15px;
+    width: 20px; /* Align text */
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+/* Hover effect for nav links */
+.sidePanel .mainBtns a:hover {
+    background-color: rgba(46, 204, 113, 0.1); /* Light green transparent background */
+    color: var(--primary-color-dark);
+    transform: translateX(5px);
+}
+
+.sidePanel .mainBtns a:hover i {
+    transform: scale(1.1);
+}
+
+/* Active link style */
+.sidePanel .mainBtns a.backgroundWhite {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    font-weight: 500;
+    box-shadow: 0 2px 5px rgba(46, 204, 113, 0.4);
+}
+
+.sidePanel .mainBtns a.backgroundWhite i {
+    color: var(--text-color-light);
+}
+
+/* ---=== Content Area ===--- */
+.content {
+    flex-grow: 1;
+    padding: 30px 40px;
+    background-color: var(--content-bg);
+    display: flex;
+    justify-content: center; /* Center content block */
+    align-items: center; /* Align content to top */
+}
+
+/* Container for different content types */
+.changeProfile,
+.changePassword,
+.changeInterest,
+.personalDetail,
+.changeUsername {
+    width: 100%;
+    max-width: 600px; /* Max width for the forms/content */
+    background-color: var(--content-bg); /* Redundant but ensures white bg */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px var(--shadow-color);
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---=== Forms & Inputs ===--- */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px; /* Spacing between form elements */
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="file"],
+select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: var(--font-primary);
+    color: var(--text-color);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+}
+
+/* Specific placeholders */
+input::placeholder {
+    color: #95a5a6;
+    opacity: 1;
+}
+
+/* Submit Button */
+input[type="submit"],
+.submitBtn /* Class added for consistency if needed */
+{
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    margin-top: 10px; /* Add some space above the button */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+input[type="submit"]:hover,
+.submitBtn:hover {
+    background-color: var(--primary-color-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(46, 204, 113, 0.3);
+}
+
+input[type="submit"]:active,
+.submitBtn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(46, 204, 113, 0.2);
+}
+
+/* ---=== Specific Section Styling ===--- */
+
+/* Change Profile Image */
+.changeProfile {
+    text-align: center;
+}
+
+.img-area {
+    width: 200px;
+    height: 200px;
+    border: 3px dashed var(--border-color);
+    border-radius: 50%; /* Make it circular */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto; /* Center the upload area */
+    cursor: pointer;
+    background-color: var(--secondary-color);
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+    position: relative;
+    overflow: hidden; /* Ensure image stays within bounds */
+}
+
+.img-area:hover {
+    border-color: var(--primary-color);
+    background-color: #e8f8ee; /* Very light green */
+}
+
+.img-area i.icon {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    transition: opacity 0.3s ease;
+}
+
+.img-area h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 5px;
+    transition: opacity 0.3s ease;
+}
+
+.img-area p {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+    transition: opacity 0.3s ease;
+}
+
+.img-area img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cover the area, maintain aspect ratio */
+    border-radius: 50%; /* Keep it circular */
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+/* When image is loaded */
+.img-area.active img {
+   opacity: 1;
+}
+
+.img-area.active i.icon,
+.img-area.active h3,
+.img-area.active p {
+    opacity: 0; /* Hide text/icon when image is shown */
+    pointer-events: none; /* Prevent interaction with hidden elements */
+}
+
+/* Hide the actual file input */
+input[type="file"][hidden] {
+    display: none;
+}
+
+
+.changeInterest .interestBox {
+    /* Keep existing flex properties for layout */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    justify-content: center; /* Or flex-start if preferred */
+    padding: 7px; /* Add some padding inside the scrollable area */
+
+    /* --- Add these lines for scrolling --- */
+    max-height: 350px; /* Adjust this value to your desired height */
+    overflow-y: auto;  /* Add vertical scrollbar ONLY when content exceeds max-height */
+    /* --- End Add --- */
+    max-width: 150%;
+    /* Optional: Nicer scrollbar styling */
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: var(--primary-color) var(--secondary-color); /* For Firefox */
+}
+
+/* Optional: Style scrollbar for Webkit browsers (Chrome, Safari, Edge) */
+.changeInterest .interestBox::-webkit-scrollbar {
+    width: 5px; /* Width of the scrollbar */
+}
+
+.changeInterest .interestBox::-webkit-scrollbar-track {
+    background: var(--secondary-color); /* Background of the track */
+    border-radius: 4px;
+}
+
+.changeInterest .interestBox::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color); /* Color of the scrollbar thumb */
+    border-radius: 4px;
+    border: 2px solid var(--secondary-color); /* Creates padding around the thumb */
+}
+
+.changeInterest .interestBox::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary-color-dark); /* Darker color on hover */
+}
+
+/* --- Ensure the individual boxes remain styled as before --- */
+.changeInterest .boxes {
+    padding: 10px 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 20px; /* Pill shape */
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+    font-size: 0.9rem;
+    user-select: none; /* Prevent text selection on click */
+    /* Make sure they don't shrink if container gets narrow */
+    flex-shrink: 0;
+}
+
+/* Rest of the .boxes styles (.boxes:hover, .boxes.selectedBox) remain the same */
+.changeInterest .boxes:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.changeInterest .boxes.selectedBox {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    border-color: var(--primary-color);
+    font-weight: 500;
+    animation: popIn 0.3s ease;
+}
+
+/* Keyframe animation remains the same */
+@keyframes popIn {
+    0% { transform: scale(0.9); opacity: 0.8; }
+    70% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+
+/* Change Username - Dynamic Styles from JS */
+/* Base styles are already defined for input[type="text"] */
+/* The JS will override background and border color directly */
+/* We can add transitions to make the color change smoother */
+#username {
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease; /* Add background-color transition */
+}
+
+/* You might want to define the error/success styles explicitly in CSS too,
+   although the JS is currently handling it. This acts as a fallback or alternative. */
+/*
+#username.error {
+    border-color: var(--error-color) !important;
+    background-color: rgba(231, 76, 60, 0.1) !important;
+}
+
+#username.success {
+    border-color: var(--success-color) !important;
+    background-color: rgba(46, 204, 113, 0.1) !important;
+}
+*/
+
+/* ---=== Responsive Adjustments (Optional Example) ===--- */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+
+    .sidePanel {
+        width: 100%;
+        height: auto;
+        flex-direction: row; /* Maybe horizontal layout on small screens? */
+        align-items: center;
+        justify-content: space-between; /* Space out back btn and nav */
+        padding: 15px;
+        box-shadow: 0 2px 5px var(--shadow-color);
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .sidePanel .backBtn {
+        margin-bottom: 0;
+    }
+
+    .sidePanel .mainBtns {
+       flex-direction: row; /* Horizontal buttons */
+       gap: 5px;
+       overflow-x: auto; /* Allow scrolling if they don't fit */
+       padding-bottom: 5px; /* Space for scrollbar if needed */
+    }
+
+    .sidePanel .mainBtns a {
+        padding: 8px 10px; /* Smaller padding */
+        font-size: 0.85rem;
+    }
+    .sidePanel .mainBtns a i {
+        margin-right: 5px; /* Less margin for icon */
+        font-size: 1.1rem;
+    }
+
+    /* Hide text on very small screens? - Optional */
+    /*
+    .sidePanel .mainBtns a span { display: none; }
+    .sidePanel .mainBtns a i { margin-right: 0; }
+    */
+
+    .content {
+        padding: 20px;
+    }
+
+    .changeProfile,
+    .changePassword,
+    .changeInterest,
+    .personalDetail,
+    .changeUsername {
+        padding: 20px;
+        margin-top: 20px; /* Add space below the header/panel */
+    }
+
+    .img-area {
+        width: 150px;
+        height: 150px;
+    }
+}

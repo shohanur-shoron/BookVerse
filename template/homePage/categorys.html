@@ -1,0 +1,158 @@
+{% extends "homePage/base.html" %}
+{% load static %}
+
+{% block style %}
+    {# Link your existing categoryStyle.css if it has other relevant styles #}
+    <link rel="stylesheet" href="{% static 'style/categoryStyle.css' %}">
+    <style>
+        .tooltip {
+            position: absolute; /* Needed for positioning near the mouse */
+            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            white-space: normal;    /* CHANGE this from nowrap to normal to allow wrapping */
+            text-overflow: clip;    /* CHANGE this from ellipsis to clip (or remove the line entirely) */
+            font-family: "Roboto Condensed", serif;
+            font-weight: 300;
+            max-width: 300px;
+            z-index: 1000;      /* Ensure it's on top */
+            pointer-events: none;
+            text-align: center;
+
+            opacity: 0; /* Start fully transparent */
+            transition: opacity 0.3s ease-in-out; /* Smooth fade-in/out over 0.3 seconds */
+            visibility: hidden; /* Hide it completely when not active */
+        }
+
+        /* Style for the tooltip when it should be visible */
+        .tooltip.visible {
+            opacity: 1; /* Fade to fully opaque */
+            visibility: visible; /* Make it visible */
+        }
+    </style>
+{% endblock style %}
+
+{% block title %}Categories - BookVerse{% endblock title %}
+
+{% block content %}
+
+    <div class="categoryContainer">
+        {% for category in categories %}
+            {# --- Add data-description attribute --- #}
+            <a href="{% url 'specific_category' category.id %}" class="item" data-description="{{ category.description }}">
+                {{ category.name }}
+            </a>
+        {% endfor %}
+    </div>
+
+    {# --- JavaScript for Tooltip --- #}
+    {# Place script at the end of the block or ideally in a separate {% block script %} in your base.html #}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() { // Ensure DOM is loaded
+
+            const categoryItems = document.querySelectorAll('.categoryContainer .item');
+            let tooltipDiv = null; // Variable to hold the tooltip element
+            let tooltipTimeout = null; // To manage fade-out delay
+
+            // Function to create and show the tooltip
+            function showTooltip(event, text) {
+                // Clear any existing timeout to prevent premature removal
+                if (tooltipTimeout) {
+                    clearTimeout(tooltipTimeout);
+                    tooltipTimeout = null;
+                }
+
+                // If tooltip doesn't exist, create it
+                if (!tooltipDiv) {
+                    tooltipDiv = document.createElement('div');
+                    tooltipDiv.className = 'tooltip';
+                    document.body.appendChild(tooltipDiv);
+                    document.addEventListener('mousemove', moveTooltip); // Start tracking mouse
+                }
+
+                // Set text content
+                tooltipDiv.textContent = text;
+
+                // Position it initially before making visible (avoids jump)
+                moveTooltip(event);
+
+                // Use requestAnimationFrame to ensure the element is rendered
+                // with opacity 0 before the 'visible' class is added,
+                // guaranteeing the CSS transition runs.
+                requestAnimationFrame(() => {
+                    tooltipDiv.classList.add('visible');
+                });
+            }
+
+            // Function to hide and remove the tooltip
+            function hideTooltip() {
+                 if (tooltipDiv) {
+                    tooltipDiv.classList.remove('visible'); // Start fade-out transition
+
+                    // Set a timeout to remove the element *after* the transition ends
+                    tooltipTimeout = setTimeout(() => {
+                        if (tooltipDiv) {
+                            tooltipDiv.remove();
+                            tooltipDiv = null;
+                            document.removeEventListener('mousemove', moveTooltip); // Stop tracking mouse
+                        }
+                         tooltipTimeout = null; // Clear the timeout reference
+                    }, 300); // Match the CSS transition duration (0.3s = 300ms)
+                }
+            }
+
+            // Function to update tooltip position
+            function moveTooltip(event) {
+                if (tooltipDiv) {
+                    // Calculate position with a small offset from the cursor
+                    const offsetX = 15; // Pixels offset to the right
+                    const offsetY = 15; // Pixels offset downwards
+
+                    let left = event.pageX + offsetX;
+                    let top = event.pageY + offsetY;
+
+                    // Basic boundary check to prevent tooltip going off-screen
+                    const tooltipRect = tooltipDiv.getBoundingClientRect(); // Get dimensions AFTER text is set
+                    const bodyWidth = document.body.clientWidth;
+                    const bodyHeight = document.body.clientHeight;
+
+                    // Adjust left position if it goes beyond the right edge
+                    if (left + tooltipRect.width > bodyWidth) {
+                        left = event.pageX - tooltipRect.width - offsetX;
+                         // Place it to the left of the cursor if it overflows right
+                         if (left < 0) left = 0; // Prevent going off left edge
+                    }
+
+                     // Adjust top position if it goes beyond the bottom edge
+                    if (top + tooltipRect.height > bodyHeight) {
+                        top = event.pageY - tooltipRect.height - offsetY;
+                        // Place it above the cursor if it overflows bottom
+                        if (top < 0) top = 0; // Prevent going off top edge
+                    }
+
+
+                    tooltipDiv.style.left = `${left}px`;
+                    tooltipDiv.style.top = `${top}px`;
+                }
+            }
+
+            // Add event listeners to each category item
+            categoryItems.forEach(item => {
+                item.addEventListener('mouseenter', function (event) {
+                    const description = this.dataset.description; // Get description from data attribute
+                    if (description) { // Only show if description exists
+                        showTooltip(event, description);
+                    }
+                });
+
+                item.addEventListener('mouseleave', function () {
+                    hideTooltip();
+                });
+            });
+
+        }); // End DOMContentLoaded
+    </script>
+
+{% endblock content %}

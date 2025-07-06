@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'style/HomePageStyle.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    {% block style %}{% endblock style %}
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+
+    {% if user.is_authenticated %}
+        <div class="sideMenu" id="sideMenu">
+            <div class="proInfo">
+                <div class="proImageInSideMenu">
+                    {% if user.profile.resized_image %}
+                        <img src="{{ user.profile.resized_image.url }}" alt="">
+                    {% elif user.profile.image %}
+                        <img src="{{ user.profile.image.url }}" alt="">
+                    {% else %}
+                        <img src="{% static 'images/icons8-user-default-96.png' %}" alt="">
+                    {% endif %}
+                </div>
+                <div class="nameAndUsername">
+                    <p>{{ user.username }}</p>
+                    <p>{{  user.get_full_name  }}</p>
+                </div>
+                <div class="closeBtn" id="closeBtn">
+                    <img src="{% static 'images/icons8-cross-24 (2).png' %}" alt="">
+                </div>
+            </div>
+
+            <a href="{% url 'update_account' %}" class="setProfile genericStyle flex">
+                <img src="{% static 'images/icons8-face-60.png' %}" alt="">
+                <p>Set Profile</p>
+            </a>
+            <div class="intersection"></div>
+
+            <a href="{% url 'user_profile' %}" class="genericStyle flex">
+                <img src="{% static 'images/icons8-customer-64.png' %}" alt="">
+                <p>Your Profile</p>
+            </a>
+            <a href="#" class="genericStyle flex">
+                <img src="{% static 'images/icons8-books-64.png' %}" alt="">
+                <p>Your Books</p>
+            </a>
+            <a href="{% url 'your_favorites' %}" class="genericStyle flex">
+                <img src="{% static 'images/icons8-favourite-64.png' %}" alt="">
+                <p>Your Favourite</p>
+            </a>
+            <a href="{% url 'liked_books' %}" class="genericStyle flex">
+                <img src="{% static 'images/icons8-like-32.png' %}" alt="">
+                <p>Your Likes</p>
+            </a>
+            <a href="{% url 'your_comments' %}" class="genericStyle flex">
+                <img src="{% static 'images/icons8-comments-64.png' %}" alt="">
+                <p>Your Comments</p>
+            </a>
+            <a href="{% url 'recently_seen' %}" class="genericStyle flex">
+                <img src="{% static 'images/icons8-time-machine-32.png' %}" alt="">
+                <p>Recently seen</p>
+            </a>
+            <a href="{% url 'currently_reading_books' %}" class="genericStyle flex">
+                <img src="{% static 'images/icons8-status-64.png' %}" alt="">
+                <p>Reading Status</p>
+            </a>
+            <a href="{% url 'finish_reading_books' %}" class="genericStyle flex">
+                <img src="{% static 'images/icons8-task-completed-64.png' %}" alt="">
+                <p>Finished Reading</p>
+            </a>
+            <a href="{% url 'want_to_read_books' %}" class="genericStyle flex">
+                <img src="{% static 'images/icons8-open-book-64.png' %}" alt="">
+                <p>Read in Future</p>
+            </a>
+            <div class="intersection"></div>
+            {% if not user.profile.is_reviewer %}
+            <a href="{% url 'congratulations_page' %}" class="genericStyle flex">
+                <img src="{% static 'images/icons8-review-64.png' %}" alt="">
+                <p>Become a Reviewer</p>
+            </a>
+            {% else %}
+            <a href="{% url 'create_book' %}" class="genericStyle flex">
+            <img src="{% static 'images/icons8-book-6400.png' %}" alt="">
+            <p>Add a Book</p>
+            </a>
+            {% endif %}
+            <a href="#" class="genericStyle flex">
+                <img src="{% static 'images/icons8-author-64.png' %}" alt="">
+                <p>Become an Author</p>
+            </a>
+            <a href="#" class="genericStyle flex">
+                <img src="{% static 'images/icons8-categorize-64.png' %}" alt="">
+                <p>Add a Category</p>
+            </a>
+            <a href="{% url 'find_book_ai' %}" class="genericStyle flex">
+                <img src="{% static 'images/icons8-ai-96.png' %}" alt="">
+                <p>Find Book with AI</p>
+            </a>
+            <a href="{% url 'agent_chat_page' %}" class="genericStyle flex">
+                <img src="{% static 'images/icons8-ai-96.png' %}" alt="">
+                <p>Manage Account with AI</p>
+            </a>
+            <div class="intersection"></div>
+            <a href="{% url 'logout_user' %}" class="genericStyle flex">
+                <img src="{% static 'images/icons8-logout-64.png' %}" alt="">
+                <p>Log-out</p>
+            </a>
+        </div>
+        <div class="sideMenuCover" id="sideMenuCover"></div>
+    {% endif %}
+
+    <div class="navbar" id="navbar">
+        <div class="upperNav">
+            <a class="mainLogo" href="{% url 'mainHomePage' %}"><img  src="{% static 'images/BooKVerse(2).png' %}" alt=""></a>
+            <div class="searchBox">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="searchInput">
+                        <input type="text" placeholder=" " name="searchText" id="searchBox1" autocomplete="off" required>
+                        <p class="labelText">Search for Book, Author or Reviewer</p>
+                    </div>
+                    <button type="submit"><img src="{% static 'images/icons8-search-30.png' %}" alt="Search"></button>
+                </form>
+
+                <div class="suggestions" id="suggestions"></div>
+
+            </div>
+            <div class="profileInfo">
+                {% if user.is_authenticated %}
+                    {% if user.profile.resized_image %}
+                        <div class="profileImage" id="profileImage2">
+                            <img src="{{ user.profile.resized_image.url }}" alt="">
+                        </div>
+                    {% elif user.profile.image %}
+                        <div class="profileImage" id="profileImage2">
+                            <img id="userProfileImage" src="{{ user.profile.image.url }}" alt="">
+                        </div>
+                    {% else %}
+                        <div class="profileImage" id="profileImage2">
+                            <img src="{% static 'images/icons8-user-default-96.png' %}" alt="">
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <a class="signuporin" href="{% url 'login_user' %}">LogIn</a>
+                    <a class="signuporin" href="{% url 'create_account' %}">SingUp</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="lowernavbar">
+            <div class="menuOptions">
+
+                <div id="manu2ndLogo">
+                    <img src="{% static 'images/BooKVerse(2).png' %}" alt="">
+                </div>
+
+                <div class="menuLinks">
+                    <div class="linkWrapper">
+                        <a href="{% url 'mainHomePage' %}" class="topLink">Home</a><br>
+                        <a href="{% url 'mainHomePage' %}" class="bottomLink">Home</a>
+                    </div>
+                </div>
+
+                <div class="menuLinks">
+                    <div class="linkWrapper">
+                        <a href="{% url 'category_page' %}" class="topLink">Categories</a><br>
+                        <a href="{% url 'category_page' %}" class="bottomLink">Categories</a>
+                    </div>
+                </div>
+
+                <div class="menuLinks">
+                    <div class="linkWrapper">
+                        <a href="{% url 'favoriteBooksPage' %}" class="topLink">Favourites</a><br>
+                        <a href="{% url 'favoriteBooksPage' %}" class="bottomLink">Favourites</a>
+                    </div>
+                </div>
+
+                <div class="menuLinks">
+                    <div class="linkWrapper">
+                        <a href="{% url 'discoverBooksPage' %}" class="topLink">Discover</a><br>
+                        <a href="{% url 'discoverBooksPage' %}" class="bottomLink">Discover</a>
+                    </div>
+                </div>
+
+                <div class="menuLinks">
+                    <div class="linkWrapper">
+                        <a href="{% url 'events' %}" class="topLink">Events</a><br>
+                        <a href="{% url 'events' %}" class="bottomLink">Events</a>
+                    </div>
+                </div>
+
+                <div class="menuLinks">
+                    <div class="linkWrapper">
+                        <a href="{% url 'book_ai' %}" class="topLink">Ask AI</a><br>
+                        <a href="{% url 'book_ai' %}" class="bottomLink">Ask AI</a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="searchBox lowerSearchBox" id="lowerSearchBox">
+                <form action="#" method="post">
+                    {% csrf_token %}
+                    <div class="searchInput">
+                        <input type="text" placeholder=" " name="searchText" id="searchBox20" autocomplete="off" required>
+                        <p class="labelText">Search for Book, Author or Reviewer</p>
+                    </div>
+                    <button type="submit"><img src="{% static 'images/icons8-search-30.png' %}" alt="Search"></button>
+                </form>
+
+                <div class="suggestions" id="suggestions2"></div>
+
+            </div>
+
+
+            <div class="helpLine" id="helpLine">
+                <div class="helpLineImage">
+                    <img src="{% static 'images/icons8-csr-53.png' %}" alt="">
+                </div>
+                <div class="helpLineText">
+                    <h3>1900-8887</h3>
+                    <p>25/7 Support Center</p>
+                </div>
+
+            </div>
+            <div class="proImgWrapper" id="proImgWrapper">
+                {% if user.is_authenticated %}
+                    {% if user.profile.resized_image %}
+                        <div class="profileImage profileImage2" id="profileImage">
+                            <img src="{{ user.profile.resized_image.url }}" alt="">
+                        </div>
+                    {% elif user.profile.image %}
+                        <div class="profileImage profileImage2" id="profileImage">
+                            <img src="{{ user.profile.image.url }}" alt="">
+                        </div>
+                    {% else %}
+                        <div class="profileImage profileImage2" id="profileImage">
+                            <img src="{% static 'images/icons8-user-default-96.png' %}" alt="">
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <a class="signuporin" href="{% url 'login_user' %}">LogIn</a>
+                    <a class="signuporin" href="{% url 'create_account' %}">SingUp</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="NavbarCover"></div>
+
+
+
+
+    {% block content %}
+    {% endblock content %}
+
+
+
+    <div class="footer">
+        <div class="ftitle">
+            @BooKVerse
+        </div>
+        <div class="flinks">
+            <p>Keep Exploring</p>
+            <div class="linkDiv1">
+                <a href="#">What we do</a>
+                <a href="#">What we are</a>
+                <a href="#">Out Impact</a>
+                <a href="#">Our Team</a>
+            </div>
+            <div class="linkDiv2">
+                <a href="#">What we do</a>
+                <a href="#">What we are</a>
+                <a href="#">Out Impact</a>
+                <a href="#">Our Team</a>
+            </div>
+            <div class="smallLink">
+                <a href="#">Press</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">BookVerse Subscription</a>
+                <a href="#">Careers</a>
+                <a href="#">Help Center</a>
+                <a href="#">BookVerse Deals</a>
+                <a href="#">Visit Library</a>
+                <a href="#">Become an Affiliate</a>
+            </div>
+        </div>
+    </div>
+
+
+{#    <script>#}
+{#        function setDynamicMaxHeight() {#}
+{#            const menuLinks = document.querySelectorAll('.menuLinks');#}
+{##}
+{#            menuLinks.forEach(link => {#}
+{#                const originalHeight = link.offsetHeight;#}
+{#                link.style.maxHeight = `${originalHeight / 2}px`;#}
+{#            });#}
+{#        }#}
+{##}
+{#        window.addEventListener('load', setDynamicMaxHeight);#}
+{#        window.addEventListener('resize', setDynamicMaxHeight);#}
+{#    </script>#}
+    <script src="{% static 'js/HomePage.js' %}"></script>
+    <script src="{% static 'js/search-suggestions.js' %}"></script>
+    <script src="{% static 'js/search-suggestions2.js' %}"></script>
+    {% block script %}
+    {% endblock script %}
+
+</body>
+</html>

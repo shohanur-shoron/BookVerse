@@ -1,0 +1,120 @@
+{% extends "account/base.html" %}
+
+{% block title %}BookVerse - Update Interest{% endblock title %}
+
+{% block content %}
+    {% load static %}
+
+    <div class="container">
+        <div class="signupProgress signupProgress2">
+            <h1>BookVerse</h1>
+            <div class="signupstep">
+                <div class="steps greentext"><img src="{% static 'images/icons8-tick-green.png' %}" alt="">SingUp</div>
+                <div class="steps greentext"><img src="{% static 'images/icons8-tick-green.png' %}" alt="">Username</div>
+                <div class="steps greentext"><img src="{% static 'images/icons8-tick-green.png' %}" alt="">Profile Picture</div>
+                <div class="steps"><img src="{% static 'images/icons8-tick-black.png' %}" alt="">Select Interest</div>
+            </div>
+        </div>
+        <div class="interestBox">
+            {% for interest in interests %}
+                {% if interest.name in user_interests %}
+                    <div class="boxes selectedBox" onclick="addInterest(this)">{{ interest.name }} <p>{{ interest.description }}</p></div>
+                {% else %}
+                    <div class="boxes" onclick="addInterest(this)">{{ interest.name }} <p>{{ interest.description }}</p></div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <a class="finishBtn" href="{% url 'mainHomePage' %}">Let's GO!</a>
+
+        {% if messages %}
+            <div class="messages">
+            {% for message in messages %}
+               <div class="message">{{ message }}</div>
+            {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+
+
+    <script>
+        function addToInterest(item) {
+            let categoryName = item.innerText;
+            const baseUrl = window.location.origin;
+
+            fetch(`${baseUrl}/account/add-interest/${categoryName}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data =>{})
+                .catch(error => {
+                    console.error('Error fetching slugs:', error);
+                });
+        }
+
+        function removeInterest(item) {
+            let categoryName = item.innerText;
+            const baseUrl = window.location.origin;
+
+            fetch(`${baseUrl}/account/del-interest/${categoryName}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data =>{})
+                .catch(error => {
+                    console.error('Error fetching slugs:', error);
+                    item.classList.add('selectedBox');
+                });
+        }
+
+        function addInterest(item){
+            if(item.classList.contains('selectedBox')){
+                item.classList.remove('selectedBox');
+                removeInterest(item)
+            }else{
+                item.classList.add('selectedBox');
+                addToInterest(item)
+            }
+        }
+
+        //hover category details
+        const boxes = document.querySelectorAll('.boxes');
+        let tooltipDiv = null;
+
+        boxes.forEach(box => {
+            box.addEventListener('mouseenter', function () {
+                const paragraph = this.querySelector('p');
+                if (paragraph) {
+                    tooltipDiv = document.createElement('div');
+                    tooltipDiv.className = 'tooltip';
+                    tooltipDiv.textContent = paragraph.textContent;
+                    document.body.appendChild(tooltipDiv);
+                    document.addEventListener('mousemove', moveTooltip);
+                }
+            });
+
+            box.addEventListener('mouseleave', function () {
+                if (tooltipDiv) {
+                    tooltipDiv.remove();
+                    tooltipDiv = null;
+                    document.removeEventListener('mousemove', moveTooltip);
+                }
+            });
+        });
+
+        function moveTooltip(event) {
+            if (tooltipDiv) {
+                tooltipDiv.style.left = `${event.pageX + 15}px`; // 10px offset right
+                tooltipDiv.style.top = `${event.pageY + 15}px`;  // 10px offset down
+            }
+        }
+    </script>
+
+{% endblock content %}
